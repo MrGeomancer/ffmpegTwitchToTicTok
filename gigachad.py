@@ -26,7 +26,7 @@ output_video = f'output_fin{i}.mp4'
 output_audio = 'ou.mp3'
 
 # Создаем процесс конвертации
-scalefilt = 'scale=1440:2500,setsar=1:1'
+scalefilt = 'scale=1440:2808,setsar=1:1'
 # blurfilt = 'gblur=sigma=20'
 blurfilt = 'boxblur=luma_radius=27'
 blurfilt2 = 'boxblur=luma_power=3'
@@ -82,15 +82,15 @@ inputs=[ffmpeg.input(path) for path in outputs]
 # Наложение видео друг на друга с разными координатами
 
 # overlay = inputs[0].overlay(inputs[1], x='1636', y='1260').filter('scale', 455, 192)  # kills
-overlay = inputs[0].overlay(inputs[1].filter('scale', 342, -1), x='1098', y='459')  # kills
+overlay = inputs[0].overlay(inputs[1].filter('scale', 342, -1), x='1098', y='612')  # kills
 
 # overlay = overlay.overlay(inputs[2], x='0', y='1050').filter('scale', 480, 528)  # radar
-overlay = overlay.overlay(inputs[2].filter('scale', 348, -1), x='0', y='255')  # radar
+overlay = overlay.overlay(inputs[2].filter('scale', 348, -1), x='0', y='408')  # radar
 
 # overlay = overlay.overlay(inputs[3], x='620', y='1200')  # players
 
 # overlay = overlay.overlay(inputs[3], x='0', y='1056').filter('scale', 1920, 1728)  # cropedorig
-overlay = overlay.overlay(inputs[3].filter('scale', 1440, -1), x='0', y='603')  # cropedo_rig
+overlay = overlay.overlay(inputs[3].filter('scale', 1440, -1), x='0', y='756')  # cropedo_rig
 
 
 # Выбираем аудио с первого видео (можно настроить под свои нужды)
