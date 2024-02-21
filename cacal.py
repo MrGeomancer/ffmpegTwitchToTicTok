@@ -1,12 +1,17 @@
-import ffmpeg
+import requests
 
-# Исходное видео
-input_video = 'in.mp4'
+headers = {
+    'sec-ch-ua': '"Not A(Brand";v="99", "Microsoft Edge";v="121", "Chromium";v="121"',
+    'Referer': 'https://www.twitch.tv/',
+    'Origin': 'https://www.twitch.tv',
+    'sec-ch-ua-mobile': '?0',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0',
+    'sec-ch-ua-platform': '"Windows"',
+}
 
-# Название выходного файла
-output_video = 'output6.mp4'
-output_audio = 'output_audio2.aac'  # Указываем файл для сохранения аудио
+response = requests.get(
+    'https://static.twitchcdn.net/assets/features.clips.components.featured-clips.components.feature-clip-button-dc5f7775af7220bff5a8.css',
+    headers=headers,
+)
 
-# Создаем процесс конвертации
-ffmpeg.input(input_video).output(output_video, vf='scale=1080:1920', vcodec='libx264', acodec='aac', strict='experimental').run()
-ffmpeg.input(input_video).output(output_audio, acodec='aac', map='a').run()
+print(response)
