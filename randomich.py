@@ -1,32 +1,51 @@
-import ffmpeg
-import os
-def add_blurred_bg():
-    HEIGHT = 1920
-    WIDTH = 3840
-    inp = ffmpeg.input('in.mp4')
-    os.system("ffmpeg -i " + inp + " -f mp3 -ab 192000 -vn music.mp3")
-    print("extracting audio...")
-    in_file = ffmpeg.input(inp)
-    probe = ffmpeg.probe('input.mp4')
-    video_stream = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
-    iw = int(video_stream['width'])
-    ih = int(video_stream['height'])
-    nw = HEIGHT * iw / ih
-    (
-        ffmpeg
-        .overlay(
-            in_file.filter('scale', WIDTH, -2).crop(0, (WIDTH * HEIGHT / nw - HEIGHT) / 2, WIDTH, HEIGHT).filter(
-                'gblur', sigma=40),
-            in_file.filter('scale', -2, HEIGHT),
-            x=(WIDTH - nw) / 2
-        )
-        .output('outputPartial.mp4')
-        .run()
-    )
-    print("bluring...")
-    os.system("ffmpeg -i outputPartial.mp4 -i music.mp3 -shortest -c:v copy -c:a aac -b:a 256k output14.mp4")
-    print("mixing...")
-    os.remove("outputPartial.mp4")
-    os.remove("music.mp3")
-    print("cleaning up...")
-    print("done!")
+import tkinter as tk
+from tkinter import ttk
+from PIL import Image, ImageTk
+import cv2
+
+class VideoPlayer:
+    def __init__(self, root, video_path):
+        self.root = root
+        self.root.title("Video Player")
+
+        self.video_path = video_path
+        self.cap = cv2.VideoCapture(video_path)
+        self.num_frames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        self.slider = ttk.Scale(root, from_=0, to=self.num_frames - 1,
+                                orient="horizontal", command=self.on_slider_move)
+        self.slider.pack(fill="x")
+
+        self.frame_width = int(self.cap.get(3))
+        self.frame_height = int(self.cap.get(4))
+
+        self.canvas = tk.Canvas(root, width=self.frame_width, height=self.frame_height)
+        self.canvas.pack()
+
+        self.current_frame = 0
+        self.update_canvas()
+
+    def on_slider_move(self, value):
+        try:
+            frame_number = int(float(value))
+            self.current_frame = frame_number
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+            self.update_canvas()
+        except ValueError:
+            pass
+
+    def update_canvas(self):
+        ret, frame = self.cap.read()
+        if ret:
+            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image = Image.fromarray(image)
+            photo = ImageTk.PhotoImage(image=image)
+
+            self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+            self.canvas.image = photo
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    video_path = "outputt_radar56.mp4"  # Замените на полный путь к вашему видеофайлу
+    player = VideoPlayer(root, video_path)
+    root.mainloop()
