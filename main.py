@@ -13,7 +13,8 @@ checkboxes_entries_cs = []
 checkboxes_entries_apex = []
 checkboxes_entries_any = []
 
-def resize_photo(image,canvas):
+
+def resize_photo(image, canvas):
     img_width, img_height = image.size
     canvas_width, canvas_height = canvas.winfo_reqwidth(), canvas.winfo_reqheight()
     scale_x = canvas_width / img_width
@@ -29,7 +30,8 @@ def explore():
     if path == '': path = path_old
     lbl2.configure(text=path)
 
-def prewatch(path):
+
+def prewatch_frame(path):
     global photo
     global slider
     global path_old
@@ -43,7 +45,7 @@ def prewatch(path):
     canvas.delete("all")
 
     video_frame = cv2.VideoCapture(path)
-    video_frame.set(cv2.CAP_PROP_POS_FRAMES, frame_show-1)
+    video_frame.set(cv2.CAP_PROP_POS_FRAMES, frame_show - 1)
     success, frame = video_frame.read()
 
     frame_count = int(video_frame.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -51,23 +53,21 @@ def prewatch(path):
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     image = Image.fromarray(frame_rgb)
-    photo, canvaslenght = resize_photo(image,canvas)
+    photo, canvaslenght = resize_photo(image, canvas)
 
     slider_int = IntVar(value=24)
-
-
 
     if path != path_old:
         lbl3 = Label(prewatch_rf, text='', width=5)
         lbl3.grid(column=0, row=1)
 
-        slider = ttk.Scale(prewatch_rf, from_=1, to=frame_count-1, orient=HORIZONTAL, length=canvaslenght, variable=slider_int,
+        slider = ttk.Scale(prewatch_rf, from_=1, to=frame_count - 1, orient=HORIZONTAL, length=canvaslenght,
+                           variable=slider_int,
                            command=lambda value: lbl3.config(text=slider_int.get())
                            )
         slider.grid(column=1, row=1)
 
     lbl4.config(text=f'{path} frame: {frame_show}')
-
 
     # print(photo.width(), photo.height())
     canvas.config(width=photo.width(), height=photo.height())
@@ -75,11 +75,16 @@ def prewatch(path):
     path_old = path
 
 
+def prerender_frame():
+    print()
+    pass
+
+
 window = Tk()
 window.title("Добро пожаловать в приложение PythonRu")
 
 style = ttk.Style()
-style.configure('TCheckbutton', font = 20)
+style.configure('TCheckbutton', font=20)
 
 prewatch_rf = Frame(window)
 prewatch_rf.grid(column=2, row=0, rowspan=100)
@@ -93,24 +98,29 @@ lbl2.grid(column=0, row=1)
 btn = ttk.Button(window, text="Обзор..", command=explore)
 btn.grid(column=1, row=1)
 
-btn2 = Button(window, text="Предпросмотр", command=lambda: prewatch(path))
+btn2 = Button(window, text="Выбрать кадр", command=lambda: prewatch_frame(path))
 btn2.grid(column=1, row=2)
+
+btn2 = Button(window, text="Пререндр кадра", command=lambda: prerender_frame(path))
+btn2.grid(column=1, row=3)
 
 lbl4 = Label(prewatch_rf, text='')  # название видео, фрейм
 lbl4.grid(column=1, row=0)
 
-
 radiobtns = Frame(window)
+
 
 def drowframe_cs():
     tab_apex.grid_remove()
     tab_any.grid_remove()
     tab_cs.grid(column=0, row=1, columnspan=3)
 
+
 def drowframe_apex():
     tab_cs.grid_remove()
     tab_any.grid_remove()
     tab_apex.grid(column=0, row=1, columnspan=3)
+
 
 def drowframe_any():
     tab_apex.grid_remove()
@@ -139,13 +149,12 @@ def add_checkbox_entry_cs():
     entry = Entry(tab_cs, width=38)
     entry.insert(0, 'Длина, Высота, Начиная с х, Начиная с y')
 
-
     # Добавляем Checkbox и Entry в список
     checkboxes_entries_cs.append((checkbox, entry))
 
     # Размещаем Checkbox и Entry на форме
-    checkbox.grid(row=2+len(checkboxes_entries_cs), column=0, sticky=W)
-    entry.grid(row=2+len(checkboxes_entries_cs), column=1, columnspan=2, sticky=E)
+    checkbox.grid(row=2 + len(checkboxes_entries_cs), column=0, sticky=W)
+    entry.grid(row=2 + len(checkboxes_entries_cs), column=1, columnspan=2, sticky=E)
 
 
 def add_checkbox_entry_apex():
@@ -154,13 +163,26 @@ def add_checkbox_entry_apex():
     entry = Entry(tab_apex, width=38)
     entry.insert(0, 'Длина, Высота, Начиная с х, Начиная с y')
 
-
     # Добавляем Checkbox и Entry в список
     checkboxes_entries_apex.append((checkbox, entry))
 
     # Размещаем Checkbox и Entry на форме
-    checkbox.grid(row=2+len(checkboxes_entries_apex), column=0, sticky=W)
-    entry.grid(row=2+len(checkboxes_entries_apex), column=1, columnspan=2, sticky=E)
+    checkbox.grid(row=2 + len(checkboxes_entries_apex), column=0, sticky=W)
+    entry.grid(row=2 + len(checkboxes_entries_apex), column=1, columnspan=2, sticky=E)
+
+
+def add_checkbox_entry_any():
+    # Создаем новый Checkbox и Entry
+    checkbox = ttk.Checkbutton(tab_any, text="Checkbox")
+    entry = Entry(tab_any, width=38)
+    entry.insert(0, 'Длина, Высота, Начиная с х, Начиная с y')
+
+    # Добавляем Checkbox и Entry в список
+    checkboxes_entries_any.append((checkbox, entry))
+
+    # Размещаем Checkbox и Entry на форме
+    checkbox.grid(row=2 + len(checkboxes_entries_any), column=0, sticky=W)
+    entry.grid(row=2 + len(checkboxes_entries_any), column=1, columnspan=2, sticky=E)
 
 
 def print_values_cs():
@@ -175,57 +197,76 @@ def print_values_apex():
         print(f"Checkbox: {checkbox.state()}, Entry: {entry.get()}")
 
 
-chb_to916 = ttk.Checkbutton(tab_cs, text='to 9:16',padding=20)
+def print_values_any():
+    # Печатаем значения всех Checkbox и Entry
+    for checkbox, entry in checkboxes_entries_any:
+        print(f"Checkbox: {checkbox.state()}, Entry: {entry.get()}")
+
+
+chb_to916 = ttk.Checkbutton(tab_cs, text='to 9:16', padding=20)
 chb_to916.grid(column=0, row=0)
 
-chb_kills = ttk.Checkbutton(tab_cs, text='kills',padding=20)
+chb_kills = ttk.Checkbutton(tab_cs, text='kills', padding=20)
 chb_kills.grid(column=1, row=0)
 
-chb_players = ttk.Checkbutton(tab_cs, text='players',padding=20)
+chb_players = ttk.Checkbutton(tab_cs, text='players', padding=20)
 chb_players.grid(column=2, row=0)
 
-chb_radar = ttk.Checkbutton(tab_cs, text='radar',padding=20)
+chb_radar = ttk.Checkbutton(tab_cs, text='radar', padding=20)
 chb_radar.grid(column=0, row=1)
 
 chb_crop = ttk.Checkbutton(tab_cs, text='crop')
-chb_crop.grid(column=1, row=1,sticky=E)
+chb_crop.grid(column=1, row=1, sticky=E)
 ent_crop = ttk.Entry(tab_cs)
-ent_crop.insert(0, '1200,1080,360,0')
-ent_crop.grid(column=2, row=1,sticky=W)
+ent_crop.insert(0, '1,2')
+# ent_crop.insert(0, '1200,1080,360,0')
+ent_crop.grid(column=2, row=1, sticky=W)
 
 ttk.Button(tab_cs, text='Добавить crop', command=add_checkbox_entry_cs).grid(column=1, row=2)
 
 print_button = Button(tab_cs, text="Печать значений", command=print_values_cs)
 print_button.grid(column=2, row=2, pady=5)
 
-
-chb_to916 = ttk.Checkbutton(tab_apex, text='to 9:16',padding=20)
+chb_to916 = ttk.Checkbutton(tab_apex, text='to 9:16', padding=20)
 chb_to916.grid(column=0, row=0)
 
-chb_kills = ttk.Checkbutton(tab_apex, text='kills',padding=20)
+chb_kills = ttk.Checkbutton(tab_apex, text='kills', padding=20)
 chb_kills.grid(column=1, row=0)
 
-chb_hp = ttk.Checkbutton(tab_apex, text='hp',padding=20)
+chb_hp = ttk.Checkbutton(tab_apex, text='hp', padding=20)
 chb_hp.grid(column=2, row=0)
 
-chb_radar = ttk.Checkbutton(tab_apex, text='radar',padding=20)
+chb_radar = ttk.Checkbutton(tab_apex, text='radar', padding=20)
 chb_radar.grid(column=0, row=1)
 
 chb_crop = ttk.Checkbutton(tab_apex, text='crop')
-chb_crop.grid(column=1, row=1,sticky=E)
+chb_crop.grid(column=1, row=1, sticky=E)
 ent_crop = ttk.Entry(tab_apex)
-ent_crop.insert(0, '1200,1080,360,0')
-ent_crop.grid(column=2, row=1,sticky=W)
+ent_crop.insert(0, '1,2')
+# ent_crop.insert(0, '1200,1080,360,0')
+ent_crop.grid(column=2, row=1, sticky=W)
 
 ttk.Button(tab_apex, text='Добавить crop', command=add_checkbox_entry_apex).grid(column=1, row=2)
 
 print_button = Button(tab_apex, text="Печать значений", command=print_values_apex)
 print_button.grid(column=2, row=2, pady=5)
 
+chb_to916 = ttk.Checkbutton(tab_any, text='to 9:16', padding=20)
+chb_to916.grid(column=0, row=0)
 
+chb_crop = ttk.Checkbutton(tab_any, text='crop')
+chb_crop.grid(column=1, row=0, sticky=E)
+ent_crop = ttk.Entry(tab_any)
+ent_crop.insert(0, '1,2')
+# ent_crop.insert(0, '1200,1080,360,0')
+ent_crop.grid(column=2, row=0, sticky=W)
 
+ttk.Button(tab_any, text='Добавить crop', command=add_checkbox_entry_any).grid(column=0, row=2)
 
-# btn = ttk.Button(radiobtns, text="Обзор..", command= lambda: print(chb_players.state(), chb_kills.state()))
+print_button = Button(tab_any, text="Печать значений", command=print_values_any)
+print_button.grid(column=1, row=1, pady=5)
+
+# btn = ttk.Button(radiobtns, text="Обзор.", command= lambda: print(chb_players.state(), chb_kills.state()))
 # btn.grid(column=2, row=2)
 #
 #
