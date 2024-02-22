@@ -4,6 +4,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import cv2
 
+import gigachad2
+
 path = str
 photo = None  # Глобальная переменная для изображения
 video_cap = None  # Глобальная переменная для каптчера видео
@@ -80,6 +82,76 @@ def prerender_frame():
     pass
 
 
+def render():
+    global path
+    preset = dict
+    cs_to916 = bool
+    cs_kills = bool
+    cs_players = bool
+    cs_radar = bool
+    cs_crop = bool
+    cs_cropentry = str
+    outputs = []
+    radval = radio_var.get()
+    print('radval:',radval)
+    if radval == 1:
+        chb=[chb_to916_cs,
+             chb_kills_cs,
+             chb_players_cs,
+             chb_radar_cs,
+             chb_crop_cs,
+             ]
+
+        try:
+            if chb_to916_cs.state()[0] == 'selected':
+                cs_to916 = True
+                outputs.append(fr'{path}/_blured.mp4')
+        except IndexError:
+            print('пустая')
+            pass
+
+        try:
+            if chb_kills_cs.state()[0] == 'selected':
+                cs_kills = True
+                outputs.append(fr'{path}/_kills.mp4')
+        except IndexError:
+            print('пустая')
+            pass
+
+
+        try:
+            if chb_players_cs.state()[0] == 'selected':
+                cs_players = True
+                outputs.append(fr'{path}/_players.mp4')
+        except IndexError:
+            print('пустая')
+            pass
+
+
+        try:
+            if chb_radar_cs.state()[0] == 'selected':
+                cs_radar = True
+                outputs.append(fr'{path}/_radar.mp4')
+        except IndexError:
+            print('пустая')
+            pass
+
+
+        try:
+            if chb_crop_cs.state()[0] == 'selected':
+                cs_crop = True
+                cs_cropentry = ent_crop_cs.get()
+                outputs.append(fr'{path}/_croped.mp4')
+        except IndexError:
+            print('пустая')
+            pass
+
+
+
+
+    gigachad2.render(outputs=outputs,cs_to916=cs_to916,cs_kills=cs_kills,cs_players=cs_players,cs_radar=cs_radar,cs_crop=cs_crop,cs_cropentry=cs_cropentry, path=path)
+
+
 window = Tk()
 window.title("Добро пожаловать в приложение PythonRu")
 
@@ -103,6 +175,9 @@ btn2.grid(column=1, row=2)
 
 btn2 = Button(window, text="Пререндр кадра", command=lambda: prerender_frame(path))
 btn2.grid(column=1, row=3)
+
+btn2 = Button(window, text="Рендер видео", command=lambda: render())
+btn2.grid(column=1, row=4)
 
 lbl4 = Label(prewatch_rf, text='')  # название видео, фрейм
 lbl4.grid(column=1, row=0)
@@ -129,13 +204,15 @@ def drowframe_any():
 
 
 radiobtns.grid(column=0, row=2)
-rad1 = ttk.Radiobutton(radiobtns, text='CS2', value=1, command=drowframe_cs)
+
+radio_var = IntVar()
+rad1 = ttk.Radiobutton(radiobtns, text='CS2', value=1, command=drowframe_cs, variable=radio_var)
 rad1.grid(column=0, row=0)
 
-rad2 = ttk.Radiobutton(radiobtns, text='Apex', value=2, command=drowframe_apex)
+rad2 = ttk.Radiobutton(radiobtns, text='Apex', value=2, command=drowframe_apex, variable=radio_var)
 rad2.grid(column=1, row=0, padx=20)
 
-rad3 = ttk.Radiobutton(radiobtns, text='Any', value=3, command=drowframe_any)
+rad3 = ttk.Radiobutton(radiobtns, text='Any', value=3, command=drowframe_any, variable=radio_var)
 rad3.grid(column=2, row=0)
 
 tab_cs = ttk.Frame(radiobtns)
@@ -203,63 +280,63 @@ def print_values_any():
         print(f"Checkbox: {checkbox.state()}, Entry: {entry.get()}")
 
 
-chb_to916 = ttk.Checkbutton(tab_cs, text='to 9:16', padding=20)
-chb_to916.grid(column=0, row=0)
+chb_to916_cs = ttk.Checkbutton(tab_cs, text='to 9:16', padding=20, takefocus=0)
+chb_to916_cs.grid(column=0, row=0)
 
-chb_kills = ttk.Checkbutton(tab_cs, text='kills', padding=20)
-chb_kills.grid(column=1, row=0)
+chb_kills_cs = ttk.Checkbutton(tab_cs, text='kills', padding=20, takefocus=0)
+chb_kills_cs.grid(column=1, row=0)
 
-chb_players = ttk.Checkbutton(tab_cs, text='players', padding=20)
-chb_players.grid(column=2, row=0)
+chb_players_cs = ttk.Checkbutton(tab_cs, text='players', padding=20, takefocus=0)
+chb_players_cs.grid(column=2, row=0)
 
-chb_radar = ttk.Checkbutton(tab_cs, text='radar', padding=20)
-chb_radar.grid(column=0, row=1)
+chb_radar_cs = ttk.Checkbutton(tab_cs, text='radar', padding=20, takefocus=0)
+chb_radar_cs.grid(column=0, row=1)
 
-chb_crop = ttk.Checkbutton(tab_cs, text='crop')
-chb_crop.grid(column=1, row=1, sticky=E)
-ent_crop = ttk.Entry(tab_cs)
-ent_crop.insert(0, '1,2')
+chb_crop_cs = ttk.Checkbutton(tab_cs, text='crop', takefocus=0)
+chb_crop_cs.grid(column=1, row=1, sticky=E)
+ent_crop_cs = ttk.Entry(tab_cs)
+ent_crop_cs.insert(0, '1,2')
 # ent_crop.insert(0, '1200,1080,360,0')
-ent_crop.grid(column=2, row=1, sticky=W)
+ent_crop_cs.grid(column=2, row=1, sticky=W)
 
 ttk.Button(tab_cs, text='Добавить crop', command=add_checkbox_entry_cs).grid(column=1, row=2)
 
 print_button = Button(tab_cs, text="Печать значений", command=print_values_cs)
 print_button.grid(column=2, row=2, pady=5)
 
-chb_to916 = ttk.Checkbutton(tab_apex, text='to 9:16', padding=20)
-chb_to916.grid(column=0, row=0)
+chb_to916_apex = ttk.Checkbutton(tab_apex, text='to 9:16', padding=20, takefocus=0)
+chb_to916_apex.grid(column=0, row=0)
 
-chb_kills = ttk.Checkbutton(tab_apex, text='kills', padding=20)
-chb_kills.grid(column=1, row=0)
+chb_kills_apex = ttk.Checkbutton(tab_apex, text='kills', padding=20, takefocus=0)
+chb_kills_apex.grid(column=1, row=0)
 
-chb_hp = ttk.Checkbutton(tab_apex, text='hp', padding=20)
-chb_hp.grid(column=2, row=0)
+chb_hp_apex = ttk.Checkbutton(tab_apex, text='hp', padding=20, takefocus=0)
+chb_hp_apex.grid(column=2, row=0)
 
-chb_radar = ttk.Checkbutton(tab_apex, text='radar', padding=20)
-chb_radar.grid(column=0, row=1)
+chb_radar_apex = ttk.Checkbutton(tab_apex, text='radar', padding=20, takefocus=0)
+chb_radar_apex.grid(column=0, row=1)
 
-chb_crop = ttk.Checkbutton(tab_apex, text='crop')
-chb_crop.grid(column=1, row=1, sticky=E)
-ent_crop = ttk.Entry(tab_apex)
-ent_crop.insert(0, '1,2')
+chb_crop_apex = ttk.Checkbutton(tab_apex, text='crop', takefocus=0)
+chb_crop_apex.grid(column=1, row=1, sticky=E)
+ent_crop_apex = ttk.Entry(tab_apex)
+ent_crop_apex.insert(0, '1,2')
 # ent_crop.insert(0, '1200,1080,360,0')
-ent_crop.grid(column=2, row=1, sticky=W)
+ent_crop_apex.grid(column=2, row=1, sticky=W)
 
 ttk.Button(tab_apex, text='Добавить crop', command=add_checkbox_entry_apex).grid(column=1, row=2)
 
 print_button = Button(tab_apex, text="Печать значений", command=print_values_apex)
 print_button.grid(column=2, row=2, pady=5)
 
-chb_to916 = ttk.Checkbutton(tab_any, text='to 9:16', padding=20)
-chb_to916.grid(column=0, row=0)
+chb_to916_any = ttk.Checkbutton(tab_any, text='to 9:16', padding=20, takefocus=0)
+chb_to916_any.grid(column=0, row=0)
 
-chb_crop = ttk.Checkbutton(tab_any, text='crop')
-chb_crop.grid(column=1, row=0, sticky=E)
-ent_crop = ttk.Entry(tab_any)
-ent_crop.insert(0, '1,2')
+chb_crop_any = ttk.Checkbutton(tab_any, text='crop', takefocus=0)
+chb_crop_any.grid(column=1, row=0, sticky=E)
+ent_crop_any = ttk.Entry(tab_any)
+ent_crop_any.insert(0, '1,2')
 # ent_crop.insert(0, '1200,1080,360,0')
-ent_crop.grid(column=2, row=0, sticky=W)
+ent_crop_any.grid(column=2, row=0, sticky=W)
 
 ttk.Button(tab_any, text='Добавить crop', command=add_checkbox_entry_any).grid(column=0, row=2)
 
