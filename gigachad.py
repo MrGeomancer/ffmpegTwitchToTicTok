@@ -11,15 +11,17 @@ with open("trying.txt", "r+") as my_file:
 # Название выходного файла
 
 
-outputs=[f'output_blured{i}.mp4',
-# outputs=[f'output_blured41.mp4',
-         f'outputt_kills{i}.mp4',
-         # f'outputt_kills41.mp4',
-         f'outputt_radar{i}.mp4',
-         # f'outputt_radar41.mp4',
-         # f'outputt_players{i}.mp4',
-         f'outputt_cropedorig{i}.mp4']
-         # f'outputt_cropedorig41.mp4']
+# outputs=[f'output_blured{i}.mp4',
+outputs=[f'output_fin103.mp4',
+# outputs=[f'output_blured93.mp4',
+#          f'output_kills{i}.mp4',
+#          f'output_kills41.mp4',
+         # f'output_radar{i}.mp4',
+         # f'output_radar79.mp4',
+         # f'output_players{i}.mp4',
+         # f'output_cropedorig{i}.mp4']
+         r'C:\Users\Pekarnya\Videos\Desktop\out4.mp4']
+         # f'output_cropedorig93.mp4']
 
 
 output_video = f'output_fin{i}.mp4'
@@ -90,7 +92,10 @@ overlay = overlay.overlay(inputs[2].filter('scale', 348, -1), x='0', y='408')  #
 # overlay = overlay.overlay(inputs[3], x='620', y='1200')  # players
 
 # overlay = overlay.overlay(inputs[3], x='0', y='1056').filter('scale', 1920, 1728)  # cropedorig
-overlay = overlay.overlay(inputs[3].filter('scale', 1440, -1), x='0', y='756')  # cropedo_rig
+# overlay = overlay.overlay(inputs[2].filter('scale', 1440, -1), x='0', y='756')  # cropedo_rig
+# overlay = inputs[0].overlay(inputs[1].filter('scale', 1440, -1), x='0', y='756')  # only cropedo_rig
+
+overlay = inputs[0].overlay(inputs[1].filter('trim',duration=f"{ffmpeg.probe(input_video)['streams'][0]['duration']}"),x ='342', y = 400)  # add nameing
 
 
 # Выбираем аудио с первого видео (можно настроить под свои нужды)
