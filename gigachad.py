@@ -1,7 +1,7 @@
 import ffmpeg
 
 # Исходное видео
-input_video = 'in2.mp4'
+input_video = 'in10.mp4'
 
 with open("trying.txt", "r+") as my_file:
     i = int(my_file.read()) + 1
@@ -11,15 +11,15 @@ with open("trying.txt", "r+") as my_file:
 # Название выходного файла
 
 
-# outputs=[f'output_blured{i}.mp4',
-outputs=[f'output_fin103.mp4',
+outputs=[f'output_blured{i}.mp4',
+# outputs=[f'output_fin103.mp4',
 # outputs=[f'output_blured93.mp4',
 #          f'output_kills{i}.mp4',
 #          f'output_kills41.mp4',
          # f'output_radar{i}.mp4',
          # f'output_radar79.mp4',
          # f'output_players{i}.mp4',
-         # f'output_cropedorig{i}.mp4']
+         f'output_cropedorig{i}.mp4',
          r'C:\Users\Pekarnya\Videos\Desktop\out4.mp4']
          # f'output_cropedorig93.mp4']
 
@@ -38,21 +38,21 @@ blurfilt4 = 'boxblur=luma_power=3'
 # boxblur=luma_radius=min(h\,w)/40:luma_power=3:chroma_radius=min(cw\,ch)/40:chroma_power=1[bg]
 
 
-making_kills = (
-    ffmpeg
-    .input(input_video)
-    .filter('crop', 285,120,1630,70)
-    .output(outputs[1], vcodec='libx264', crf=22)
-    .run()
-)
+# making_kills = (
+#     ffmpeg
+#     .input(input_video)
+#     .filter('crop', 285,120,1630,70)
+#     .output(outputs[1], vcodec='libx264', crf=22)
+#     .run()
+# )
 
-making_radar = (
-    ffmpeg
-    .input(input_video)
-    .filter('crop', 289,289,6,6)
-    .output(outputs[2], vcodec='libx264', crf=22)
-    .run()
-)
+# making_radar = (
+#     ffmpeg
+#     .input(input_video)
+#     .filter('crop', 289,289,6,6)
+#     .output(outputs[2], vcodec='libx264', crf=22)
+#     .run()
+# )
 
 # making_players = (
 #     ffmpeg
@@ -66,14 +66,14 @@ making_neworig = (
     ffmpeg
     .input(input_video)
     .filter('crop', 1200,1080,360,0)
-    .output(outputs[3], vcodec='libx264', crf=22)  # outputs[4] раньше
+    .output(outputs[1], vcodec='libx264', crf=22)  # outputs[4] раньше
     .run()
 )
 
 making_bg = (
     ffmpeg
-    .input(input_video)
-    .output(outputs[0], aspect='9:16', vcodec='libx264', vf=f'{scalefilt}, {blurfilt},{blurfilt2}, {blurfilt3},{blurfilt4}')
+    .input(outputs[1])
+    .output(outputs[0], vcodec='libx264', vf=f'{scalefilt}, {blurfilt},{blurfilt2}, {blurfilt3},{blurfilt4}')
     .run()
 )
 
@@ -84,18 +84,20 @@ inputs=[ffmpeg.input(path) for path in outputs]
 # Наложение видео друг на друга с разными координатами
 
 # overlay = inputs[0].overlay(inputs[1], x='1636', y='1260').filter('scale', 455, 192)  # kills
-overlay = inputs[0].overlay(inputs[1].filter('scale', 342, -1), x='1098', y='612')  # kills
+# overlay = inputs[0].overlay(inputs[1].filter('scale', 342, -1), x='1098', y='612')  # kills
+
+# overlay = inputs[0].overlay(inputs[1], x='500', y='612')  # kills
 
 # overlay = overlay.overlay(inputs[2], x='0', y='1050').filter('scale', 480, 528)  # radar
-overlay = overlay.overlay(inputs[2].filter('scale', 348, -1), x='0', y='408')  # radar
+# overlay = overlay.overlay(inputs[2].filter('scale', 348, -1), x='0', y='408')  # radar
 
 # overlay = overlay.overlay(inputs[3], x='620', y='1200')  # players
 
 # overlay = overlay.overlay(inputs[3], x='0', y='1056').filter('scale', 1920, 1728)  # cropedorig
 # overlay = overlay.overlay(inputs[2].filter('scale', 1440, -1), x='0', y='756')  # cropedo_rig
-# overlay = inputs[0].overlay(inputs[1].filter('scale', 1440, -1), x='0', y='756')  # only cropedo_rig
+overlay = inputs[0].overlay(inputs[1].filter('scale', 1440, -1), x='0', y='756')  # only cropedo_rig
 
-overlay = inputs[0].overlay(inputs[1].filter('trim',duration=f"{ffmpeg.probe(input_video)['streams'][0]['duration']}"),x ='342', y = 400)  # add nameing
+overlay = overlay.overlay(inputs[2].filter('trim',duration=f"{ffmpeg.probe(input_video)['streams'][0]['duration']}"),x ='342', y = 400)  # add nameing
 
 
 # Выбираем аудио с первого видео (можно настроить под свои нужды)
@@ -104,6 +106,8 @@ overlay = overlay.output(infile.audio,output_video, vcodec='libx264', acodec='aa
 # Запускаем FFmpeg
 ffmpeg.run(overlay, overwrite_output=True)
 
+# print(infile)
+# print
 
 
 
