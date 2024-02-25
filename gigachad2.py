@@ -2,7 +2,8 @@ import ffmpeg
 import os
 
 
-def render_crop(path):
+def render_crop(path, scale):
+    print(scale)
     making_neworig = (
         ffmpeg
         .input(path)
@@ -52,7 +53,8 @@ def render(outputs, path, **kwargs):
     print(kwargs)
     if kwargs['cs_crop'] == True:
         print('Начало рендера crop')
-        render_crop(path)
+        entry = float(kwargs['cs_cropentry'])
+        render_crop(path, entry)
     if kwargs['cs_to916'] == True:
         if kwargs['cs_crop'] == True:
             print('Начало рендера блюр из crop')
