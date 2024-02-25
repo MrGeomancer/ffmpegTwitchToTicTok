@@ -93,7 +93,7 @@ def render():
     cs_cropentry = str
     outputs = []
     radval = radio_var.get()
-    print('radval:',radval)
+    # print('radval:',radval)
     if radval == 1:
         chb=[chb_to916_cs,
              chb_kills_cs,
@@ -107,7 +107,7 @@ def render():
                 cs_to916 = True
                 outputs.append(fr'{path}/_blured.mp4')
         except IndexError:
-            print('пустая')
+            # print('пустая')
             pass
 
         try:
@@ -115,7 +115,7 @@ def render():
                 cs_kills = True
                 outputs.append(fr'{path}/_kills.mp4')
         except IndexError:
-            print('пустая')
+            # print('пустая')
             pass
 
 
@@ -124,7 +124,7 @@ def render():
                 cs_players = True
                 outputs.append(fr'{path}/_players.mp4')
         except IndexError:
-            print('пустая')
+            # print('пустая')
             pass
 
 
@@ -133,7 +133,7 @@ def render():
                 cs_radar = True
                 outputs.append(fr'{path}/_radar.mp4')
         except IndexError:
-            print('пустая')
+            # print('пустая')
             pass
 
 
@@ -143,7 +143,7 @@ def render():
                 cs_cropentry = ent_crop_cs.get()
                 outputs.append(fr'{path}/_croped.mp4')
         except IndexError:
-            print('пустая')
+            # print('пустая')
             pass
 
 
