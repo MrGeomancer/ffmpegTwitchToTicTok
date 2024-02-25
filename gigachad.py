@@ -19,9 +19,9 @@ outputs=[f'output_blured{i}.mp4',
          # f'output_radar{i}.mp4',
          # f'output_radar79.mp4',
          # f'output_players{i}.mp4',
-         f'output_cropedorig{i}.mp4',
-         r'C:\Users\Pekarnya\Videos\Desktop\out4.mp4']
-         # f'output_cropedorig93.mp4']
+         # f'output_cropedorig{i}.mp4',
+         # r'C:\Users\Pekarnya\Videos\Desktop\out4.mp4']
+         f'output_cropedorig93.mp4']
 
 
 output_video = f'output_fin{i}.mp4'
@@ -62,18 +62,32 @@ blurfilt4 = 'boxblur=luma_power=3'
 #     .run()
 # )
 
-making_neworig = (
-    ffmpeg
-    .input(input_video)
-    .filter('crop', 1200,1080,360,0)
-    .output(outputs[1], vcodec='libx264', crf=22)  # outputs[4] раньше
-    .run()
-)
+# making_neworig = (
+#     ffmpeg
+#     .input(input_video)
+#     .filter('crop', 1200,1080,360,0)
+#     .output(outputs[1], vcodec='libx264', crf=22)  # outputs[4] раньше
+#     .run()
+# )
 
+cropfilt = 'crop=1200:1080:360:0'
+# making_bg = (
+#     ffmpeg
+#     # .input(input_video)
+#     .input(outputs[1])
+#     .output(outputs[0], vcodec='libx264', vf=f'{scalefilt}, {blurfilt},{blurfilt2}, {blurfilt3},{blurfilt4}')
+#     .run()
+# )
 making_bg = (
     ffmpeg
-    .input(outputs[1])
-    .output(outputs[0], vcodec='libx264', vf=f'{scalefilt}, {blurfilt},{blurfilt2}, {blurfilt3},{blurfilt4}')
+    .input(input_video)
+    # .input(outputs[1])
+    .filter('crop', 1200, 1080, 360, 0)
+    .filter('scale', 1440, 2808)
+    .filter('setsar', 1)
+    .filter('boxblur', luma_radius=27, luma_power=3)
+    .filter('boxblur', chroma_radius=27, luma_power=3)
+    .output(outputs[0], vcodec='libx264')
     .run()
 )
 
@@ -104,7 +118,7 @@ overlay = overlay.overlay(inputs[2].filter('trim',duration=f"{ffmpeg.probe(input
 overlay = overlay.output(infile.audio,output_video, vcodec='libx264', acodec='aac')
 
 # Запускаем FFmpeg
-ffmpeg.run(overlay, overwrite_output=True)
+# ffmpeg.run(overlay, overwrite_output=True)
 
 # print(infile)
 # print
