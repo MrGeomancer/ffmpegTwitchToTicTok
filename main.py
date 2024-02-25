@@ -142,6 +142,7 @@ def render():
                 cs_crop = True
                 cs_cropentry = ent_crop_cs.get()
                 outputs.append(fr'{path}/_croped.mp4')
+                outputs.append({'scale':cs_cropentry})
         except IndexError:
             # print('пустая')
             pass
