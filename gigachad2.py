@@ -18,7 +18,7 @@ def render_crop(path, scale, rez_orig):
         .input(path)
         .filter('crop', crop_x, crop_y, crop_from_x, 0)
         .filter('scale', rez['width'], scale_to_y)
-        .output(fr'{path}_folder/croped2.mp4', vcodec='libx264', crf=22)
+        .output(fr'{path}_folder/croped.mp4', vcodec='libx264', crf=22)
         .run(overwrite_output=False)
     )
 
@@ -28,10 +28,11 @@ def render_crop(path, scale, rez_orig):
 
     on_bg = (
         ffmpeg
-        .input(fr'{path}_folder/bg.png')
+        # .input(fr'{path}_folder/bg.png')
+        .input(fr'{path}_folder/bg.mp4')
         .overlay(
             ffmpeg
-            .input(fr'{path}_folder/croped2.mp4')
+            .input(fr'{path}_folder/croped.mp4')
             # .filter('scale', rez['width'], -1)
             # .filter('scale', rez['width'], scale_to_y)
             , x='0'
@@ -90,9 +91,12 @@ def render(outputs, path, **kwargs):
     rez_input = take_rez(path)
     making_bg = (
         ffmpeg
-        .input(r'C:\Users\Pekarnya\Videos\stock_bg.png')
-        .filter('scale', rez['width'], rez['height'])
-        .output(fr'{path}_folder/bg.png')
+        .input(r'C:\Users\Pekarnya\Videos\stock_bg.png'
+               ,loop=1
+               ,t=1
+               )
+        # .filter('scale', rez['width'], rez['height'])
+        .output(fr'{path}_folder/bg.mp4',vf=f'scale={rez['width']}:{rez['height']},setsar=1:1')
         .run(overwrite_output=True)
     )
     if kwargs['cs_crop'] == True:
