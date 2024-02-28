@@ -3,11 +3,15 @@ import os
 
 
 def render_crop(path, scale):
-    print(scale)
+    # print('scale:',scale)
+    # type(scale)
+    global rez
+    crop_x = rez['width']/scale
+    crop_from_x = 1920/2-crop_x/2
     making_neworig = (
         ffmpeg
         .input(path)
-        .filter('crop', 1200, 1080, 360, 0)
+        .filter('crop', crop_x, 1080, crop_from_x, 0)
         .filter('scale', 1440, -1)
         .output(fr'{path}_folder/croped.mp4', vcodec='libx264', crf=22)  # outputs[4] раньше
         .run()
@@ -38,8 +42,8 @@ def render_blur(path, blurcroped):
 
 def overlayall(path, outputs):
     # inputs=[ffmpeg.input(path) for path in outputs]
-    # overlay = ffmpeg.input(fr'{path}_folder/blured.mp4').overlay(ffmpeg.input(fr'{path}_folder/croped.mp4').filter('scale', 1440, -1), x='0', y='756')  # only cropedo_rig
-    overlay = ffmpeg.input(fr'{path}_folder/blured.mp4').overlay(ffmpeg.input(fr'{path}').filter('scale', 1440, -1), x='0', y='864')  # only cropedo_rig
+    overlay = ffmpeg.input(fr'{path}_folder/blured.mp4').overlay(ffmpeg.input(fr'{path}_folder/croped.mp4').filter('scale', 1440, -1), x='0', y='756')  # only cropedo_rig
+    # overlay = ffmpeg.input(fr'{path}_folder/blured.mp4').overlay(ffmpeg.input(fr'{path}').filter('scale', 1440, -1), x='0', y='864')  # only cropedo_rig
 
     overlay = overlay.overlay(
         ffmpeg.input(r'C:\Users\Pekarnya\Videos\Desktop\out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"), x='342', y=400)  # add nameing
