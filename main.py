@@ -296,7 +296,7 @@ chb_radar_cs.grid(column=0, row=1)
 chb_crop_cs = ttk.Checkbutton(tab_cs, text='crop', takefocus=0)
 chb_crop_cs.grid(column=1, row=1, sticky=E)
 ent_crop_cs = ttk.Entry(tab_cs)
-ent_crop_cs.insert(0, '1.2')
+ent_crop_cs.insert(0, '0.625')
 # ent_crop.insert(0, '1200,1080,360,0')
 ent_crop_cs.grid(column=2, row=1, sticky=W)
 
