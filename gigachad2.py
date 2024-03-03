@@ -43,7 +43,7 @@ def render_crop(path, scale, rez_orig):
     )
     return croped_path
 
-def render_kills(path, rez_orig, scale):
+def render_kills_cs(path, rez_orig, scale):
     global rez
     crop_x = 285
     crop_y = 120
@@ -87,7 +87,7 @@ def render_kills(path, rez_orig, scale):
     # )
 
 
-def render_radar(path, rez_orig, scale):
+def render_radar_cs(path, rez_orig, scale):
     global rez
     crop_x = 289
     crop_y = 289
@@ -118,7 +118,7 @@ def render_radar(path, rez_orig, scale):
 # )
 
 
-def render_players(path, rez_orig, scale):
+def render_players_cs(path, rez_orig, scale):
     global rez
     crop_x = 680
     crop_y = 180
@@ -205,7 +205,7 @@ def overlayall(path, outputs):
     global rez
     overlay = overlay = ffmpeg.input(fr'{path}_folder/blured.mp4')
     for item in outputs:
-        overlay=overlay.overlay(ffmpeg.input(item).filter('chromakey', color='0x00FF00', similarity=0.2, blend=0.2),x=0,y=0)
+        overlay=overlay.overlay(ffmpeg.input(item).filter('chromakey', color='0x00FF00', similarity=0.2, blend=0.1),x=0,y=0)
     overlay = overlay.overlay(ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"), x='342', y=400)  # add nameing
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
     ffmpeg.run(overlay, overwrite_output=True)
@@ -266,25 +266,25 @@ def render(outputs, path, **kwargs):
         entry = float(kwargs['cs_cropentry'].replace(',', '.'))
     except:
         entry = 1
-    if kwargs['cs_crop'] == True:
+    if kwargs['any_crop'] == True:
         print('Начало рендера crop')
         print(kwargs['cs_cropentry'])
         croped_path = render_crop(path, entry, rez_input)
-    if kwargs['cs_to916'] == True:
+    if kwargs['any_to916'] == True:
         if kwargs['cs_crop'] == True:
             print('Начало рендера блюр из crop')
             render_blur(path, True, croped_path)
         else: render_blur(path, False)
     if kwargs['cs_kills'] == True:
         print('Начало рендера kills')
-        render_kills(path, rez_input, entry)
+        render_kills_cs(path, rez_input, entry)
     if kwargs['cs_radar'] == True:
         print('Начало рендера kills')
-        render_radar(path, rez_input, entry)
+        render_radar_cs(path, rez_input, entry)
     if kwargs['cs_players'] == True:
         print('Начало рендера kills')
-        render_players(path, rez_input, entry)
-    if kwargs['cs_webcam'] == True:
+        render_players_cs(path, rez_input, entry)
+    if kwargs['any_webcam'] == True:
         print('Начало рендера kills')
         render_webcam(path, rez_input, entry)
 
