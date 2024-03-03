@@ -85,13 +85,18 @@ def prerender_frame():
 def render():
     global path
     preset = dict
-    cs_to916 = bool
+    any_to916 = bool
     cs_kills = bool
     cs_players = bool
     cs_radar = bool
-    cs_crop = bool
-    cs_webcam = bool
-    cs_cropentry = str
+    any_crop = bool
+    any_webcam = bool
+    any_cropentry = str
+    apex_kills = bool
+    apex_zone = bool
+    apex_radar = bool
+    apex_hp = bool
+    apex_rang = bool
     outputs = []
     radval = radio_var.get()
     # print('radval:',radval)
@@ -105,8 +110,8 @@ def render():
 
         try:
             if chb_crop_cs.state()[0] == 'selected':
-                cs_crop = True
-                cs_cropentry = ent_crop_cs.get()
+                any_crop = True
+                any_cropentry = ent_crop_cs.get()
                 outputs.append(fr'{path}_folder/croped_on_bg.mp4')
         except IndexError:
             # print('пустая')
@@ -114,7 +119,7 @@ def render():
 
         try:
             if chb_to916_cs.state()[0] == 'selected':
-                cs_to916 = True
+                any_to916 = True
                 # outputs.append(fr'{path}_folder/blured.mp4')
         except IndexError:
             # print('пустая')
@@ -154,8 +159,84 @@ def render():
         except IndexError:
             # print('пустая')
             pass
+    if radval == 2:
 
-    gigachad2.render(outputs=outputs,cs_to916=cs_to916,cs_kills=cs_kills,cs_players=cs_players,cs_radar=cs_radar,cs_crop=cs_crop,cs_cropentry=cs_cropentry, cs_webcam=cs_webcam, path=path)
+        try:
+            if chb_crop_apex.state()[0] == 'selected':
+                any_crop = True
+                any_cropentry = ent_crop_apex.get()
+                outputs.append(fr'{path}_folder/croped_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+        try:
+            if chb_to916_apex.state()[0] == 'selected':
+                any_to916 = True
+                # outputs.append(fr'{path}_folder/blured.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+        try:
+            if chb_kills_apex.state()[0] == 'selected':
+                apex_kills = True
+                outputs.append(fr'{path}_folder/kills_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+
+        try:
+            if chb_zone_apex.state()[0] == 'selected':
+                apex_zone = True
+                outputs.append(fr'{path}_folder/zone_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+
+        try:
+            if chb_radar_apex.state()[0] == 'selected':
+                apex_radar = True
+                outputs.append(fr'{path}_folder/radar_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+
+        try:
+            if chb_rang_apex.state()[0] == 'selected':
+                apex_rang = True
+                outputs.append(fr'{path}_folder/rang_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+
+        try:
+            if chb_hp_apex.state()[0] == 'selected':
+                apex_hp = True
+                outputs.append(fr'{path}_folder/hp_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+
+        try:
+            if chb_webcam_apex.state()[0] == 'selected':
+                any_webcam = True
+                outputs.append(fr'{path}_folder/webcam_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+    gigachad2.render(outputs=outputs,
+                     any_to916=any_to916,any_crop=any_crop,any_cropentry=any_cropentry, any_webcam=any_webcam,
+                     cs_kills=cs_kills,cs_players=cs_players,cs_radar=cs_radar,
+                     apex_radar=apex_radar,apex_hp=apex_hp,apex_kills=apex_kills,apex_rang=apex_rang,apex_zone=apex_zone,
+                     path=path,
+                     )
 
 
 window = Tk()
@@ -250,8 +331,8 @@ def add_checkbox_entry_apex():
     checkboxes_entries_apex.append((checkbox, entry))
 
     # Размещаем Checkbox и Entry на форме
-    checkbox.grid(row=2 + len(checkboxes_entries_apex), column=0, sticky=W)
-    entry.grid(row=2 + len(checkboxes_entries_apex), column=1, columnspan=2, sticky=E)
+    checkbox.grid(row=4 + len(checkboxes_entries_apex), column=0, sticky=W)
+    entry.grid(row=4 + len(checkboxes_entries_apex), column=1, columnspan=2, sticky=E)
 
 
 def add_checkbox_entry_any():
@@ -319,14 +400,17 @@ chb_to916_apex.grid(column=0, row=0)
 chb_kills_apex = ttk.Checkbutton(tab_apex, text='kills, dmg', padding=20, takefocus=0)
 chb_kills_apex.grid(column=1, row=0)
 
-chb_kills_apex = ttk.Checkbutton(tab_apex, text='rang', padding=20, takefocus=0)
-chb_kills_apex.grid(column=0, row=2)
+chb_rang_apex = ttk.Checkbutton(tab_apex, text='rang', padding=20, takefocus=0)
+chb_rang_apex.grid(column=0, row=2)
 
 chb_hp_apex = ttk.Checkbutton(tab_apex, text='hp', padding=20, takefocus=0)
 chb_hp_apex.grid(column=2, row=0)
 
 chb_radar_apex = ttk.Checkbutton(tab_apex, text='radar', padding=20, takefocus=0)
 chb_radar_apex.grid(column=0, row=1)
+
+chb_zone_apex = ttk.Checkbutton(tab_apex, text='zone', padding=20, takefocus=0)
+chb_zone_apex.grid(column=1, row=2)
 
 chb_crop_apex = ttk.Checkbutton(tab_apex, text='crop', takefocus=0)
 chb_crop_apex.grid(column=1, row=1, sticky=E)
@@ -338,10 +422,10 @@ ent_crop_apex.grid(column=2, row=1, sticky=W)
 chb_webcam_apex = ttk.Checkbutton(tab_apex, text='webcam', padding=20, takefocus=0)
 chb_webcam_apex.grid(column=1, row=2)
 
-ttk.Button(tab_apex, text='Добавить crop', command=add_checkbox_entry_apex).grid(column=1, row=2)
+ttk.Button(tab_apex, text='Добавить crop', command=add_checkbox_entry_apex).grid(column=0, row=4)
 
 print_button = Button(tab_apex, text="Печать значений", command=print_values_apex)
-print_button.grid(column=2, row=2, pady=5)
+print_button.grid(column=1, row=4, pady=5)
 
 chb_to916_any = ttk.Checkbutton(tab_any, text='to 9:16', padding=20, takefocus=0)
 chb_to916_any.grid(column=0, row=0)
