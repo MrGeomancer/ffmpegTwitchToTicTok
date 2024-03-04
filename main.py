@@ -154,7 +154,7 @@ def render():
 
         try:
             if chb_webcam_cs.state()[0] == 'selected':
-                cs_webcam = True
+                any_webcam = True
                 outputs.append(fr'{path}_folder/webcam_on_bg.mp4')
         except IndexError:
             # print('пустая')
@@ -415,7 +415,7 @@ chb_zone_apex.grid(column=1, row=2)
 chb_crop_apex = ttk.Checkbutton(tab_apex, text='crop', takefocus=0)
 chb_crop_apex.grid(column=1, row=1, sticky=E)
 ent_crop_apex = ttk.Entry(tab_apex)
-ent_crop_apex.insert(0, '1,2')
+ent_crop_apex.insert(0, '0.53')
 # ent_crop.insert(0, '1200,1080,360,0')
 ent_crop_apex.grid(column=2, row=1, sticky=W)
 
