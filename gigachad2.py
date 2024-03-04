@@ -259,7 +259,7 @@ def render(outputs, path, **kwargs):
                ,t=1
                )
         # .filter('scale', rez['width'], rez['height'])
-        .output(fr'{path}_folder/bg.mp4',vf=f'scale={rez['width']}:{rez['height']},setsar=1:1')
+        .output(fr'{path}_folder/bg.mp4',vf=f'scale={rez['width']}:{rez['height']},setsar=1:1,fps=60')
         .run(overwrite_output=True)
     )
     try:
