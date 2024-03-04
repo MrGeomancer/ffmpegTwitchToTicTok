@@ -263,15 +263,15 @@ def render(outputs, path, **kwargs):
         .run(overwrite_output=True)
     )
     try:
-        entry = float(kwargs['cs_cropentry'].replace(',', '.'))
+        entry = float(kwargs['any_cropentry'].replace(',', '.'))
     except:
         entry = 1
     if kwargs['any_crop'] == True:
         print('Начало рендера crop')
-        print(kwargs['cs_cropentry'])
+        print(kwargs['any_cropentry'])
         croped_path = render_crop(path, entry, rez_input)
     if kwargs['any_to916'] == True:
-        if kwargs['cs_crop'] == True:
+        if kwargs['any_crop'] == True:
             print('Начало рендера блюр из crop')
             render_blur(path, True, croped_path)
         else: render_blur(path, False)
