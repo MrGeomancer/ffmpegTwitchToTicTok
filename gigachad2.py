@@ -118,6 +118,47 @@ def render_radar_cs(path, rez_orig, scale):
 # )
 
 
+def render_mask_apex(path, rez_orig, scale):
+    global rez
+
+    making_apex_mask = (
+        ffmpeg
+        .input(path)
+        .overlay(
+            ffmpeg
+            .input(r'stock/mask-apex.png')
+            , x=0
+            , y=0
+        )
+        .output(fr'{path}_folder/apex_mask.mp4', vcodec='libx264')
+        .run(overwrite_output=False)
+    )
+
+
+def render_radar_apex(path, rez_orig, scale):
+    global rez
+    crop_x = 244
+    crop_y = 244
+    scale_to_x = crop_x * 1.5
+    scale_to_y = crop_y * 1.5
+    overlay_y = ((rez['height']/2)-(((rez['width']/(rez_orig['width']*scale)) * rez_orig['height'])/2))-scale_to_y
+
+    making_radar = (
+        ffmpeg
+        .input(fr'{path}_folder/bg.mp4')
+        .overlay(
+            ffmpeg
+            .input(fr'{path}_folder/apex_mask.mp4')
+            .filter('crop', 244,244,48,48)
+            .filter('scale', scale_to_x, scale_to_y)
+            , x=2
+            , y=overlay_y
+        )
+        .output(fr'{path}_folder/radar_on_bg.mp4', vcodec='libx264')
+        .run(overwrite_output=False)
+    )
+
+
 def render_players_cs(path, rez_orig, scale):
     global rez
     crop_x = 680
@@ -287,6 +328,13 @@ def render(outputs, path, **kwargs):
     if kwargs['any_webcam'] == True:
         print('Начало рендера kills')
         render_webcam(path, rez_input, entry)
+    if kwargs['apex_make_bg'] == True:
+        print('Начало рендера apex_mask')
+        render_mask_apex(path, rez_input, entry)
+    if kwargs['apex_radar'] == True:
+        print('Начало рендера apex_radar')
+        render_radar_apex(path, rez_input, entry)
+
 
 
     overlayall(path,outputs)
