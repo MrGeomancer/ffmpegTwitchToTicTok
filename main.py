@@ -97,6 +97,7 @@ def render():
     apex_radar = bool
     apex_hp = bool
     apex_rang = bool
+    apex_make_bg = bool
     outputs = []
     radval = radio_var.get()
     # print('radval:',radval)
@@ -160,6 +161,7 @@ def render():
             # print('пустая')
             pass
     if radval == 2:
+        apex_make_bg = True
 
         try:
             if chb_crop_apex.state()[0] == 'selected':
@@ -234,7 +236,7 @@ def render():
     gigachad2.render(outputs=outputs,
                      any_to916=any_to916,any_crop=any_crop,any_cropentry=any_cropentry, any_webcam=any_webcam,
                      cs_kills=cs_kills,cs_players=cs_players,cs_radar=cs_radar,
-                     apex_radar=apex_radar,apex_hp=apex_hp,apex_kills=apex_kills,apex_rang=apex_rang,apex_zone=apex_zone,
+                     apex_make_bg=apex_make_bg,apex_radar=apex_radar,apex_hp=apex_hp,apex_kills=apex_kills,apex_rang=apex_rang,apex_zone=apex_zone,
                      path=path,
                      )
 
