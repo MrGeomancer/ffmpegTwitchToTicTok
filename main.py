@@ -96,18 +96,19 @@ def render():
     apex_zone = bool
     apex_radar = bool
     apex_hp = bool
+    apex_hp_armor = bool
     apex_rang = bool
     apex_make_bg = bool
     outputs = []
     radval = radio_var.get()
     # print('radval:',radval)
     if radval == 1:
-        chb=[chb_to916_cs,
-             chb_kills_cs,
-             chb_players_cs,
-             chb_radar_cs,
-             chb_crop_cs,
-             ]
+        chb = [chb_to916_cs,
+               chb_kills_cs,
+               chb_players_cs,
+               chb_radar_cs,
+               chb_crop_cs,
+               ]
 
         try:
             if chb_crop_cs.state()[0] == 'selected':
@@ -134,7 +135,6 @@ def render():
             # print('пустая')
             pass
 
-
         try:
             if chb_players_cs.state()[0] == 'selected':
                 cs_players = True
@@ -143,7 +143,6 @@ def render():
             # print('пустая')
             pass
 
-
         try:
             if chb_radar_cs.state()[0] == 'selected':
                 cs_radar = True
@@ -151,7 +150,6 @@ def render():
         except IndexError:
             # print('пустая')
             pass
-
 
         try:
             if chb_webcam_cs.state()[0] == 'selected':
@@ -188,7 +186,6 @@ def render():
             # print('пустая')
             pass
 
-
         try:
             if chb_zone_apex.state()[0] == 'selected':
                 apex_zone = True
@@ -196,7 +193,6 @@ def render():
         except IndexError:
             # print('пустая')
             pass
-
 
         try:
             if chb_radar_apex.state()[0] == 'selected':
@@ -206,7 +202,6 @@ def render():
             # print('пустая')
             pass
 
-
         try:
             if chb_rang_apex.state()[0] == 'selected':
                 apex_rang = True
@@ -214,7 +209,6 @@ def render():
         except IndexError:
             # print('пустая')
             pass
-
 
         try:
             if chb_hp_apex.state()[0] == 'selected':
@@ -224,6 +218,13 @@ def render():
             # print('пустая')
             pass
 
+        try:
+            if chb_hp_armor_apex.state()[0] == 'selected':
+                apex_hp_armor = True
+                outputs.append(fr'{path}_folder/hp_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
 
         try:
             if chb_webcam_apex.state()[0] == 'selected':
@@ -234,9 +235,10 @@ def render():
             pass
 
     gigachad2.render(outputs=outputs,
-                     any_to916=any_to916,any_crop=any_crop,any_cropentry=any_cropentry, any_webcam=any_webcam,
-                     cs_kills=cs_kills,cs_players=cs_players,cs_radar=cs_radar,
-                     apex_make_bg=apex_make_bg,apex_radar=apex_radar,apex_hp=apex_hp,apex_kills=apex_kills,apex_rang=apex_rang,apex_zone=apex_zone,
+                     any_to916=any_to916, any_crop=any_crop, any_cropentry=any_cropentry, any_webcam=any_webcam,
+                     cs_kills=cs_kills, cs_players=cs_players, cs_radar=cs_radar,
+                     apex_make_bg=apex_make_bg, apex_radar=apex_radar, apex_hp=apex_hp, apex_kills=apex_kills,
+                     apex_rang=apex_rang, apex_zone=apex_zone, apex_hp_armor=apex_hp_armor,
                      path=path,
                      )
 
@@ -400,26 +402,29 @@ chb_to916_apex = ttk.Checkbutton(tab_apex, text='to 9:16', padding=20, takefocus
 chb_to916_apex.grid(column=0, row=0)
 
 chb_kills_apex = ttk.Checkbutton(tab_apex, text='kills, dmg', padding=20, takefocus=0)
-chb_kills_apex.grid(column=1, row=0)
+chb_kills_apex.grid(column=0, row=3)
 
 chb_rang_apex = ttk.Checkbutton(tab_apex, text='rang', padding=20, takefocus=0)
 chb_rang_apex.grid(column=0, row=2)
 
 chb_hp_apex = ttk.Checkbutton(tab_apex, text='hp', padding=20, takefocus=0)
-chb_hp_apex.grid(column=2, row=0)
+chb_hp_apex.grid(column=2, row=1)
+
+chb_hp_armor_apex = ttk.Checkbutton(tab_apex, text='hp with armor', padding=20, takefocus=0)
+chb_hp_armor_apex.grid(column=2, row=2)
 
 chb_radar_apex = ttk.Checkbutton(tab_apex, text='radar', padding=20, takefocus=0)
 chb_radar_apex.grid(column=0, row=1)
 
 chb_zone_apex = ttk.Checkbutton(tab_apex, text='zone', padding=20, takefocus=0)
-chb_zone_apex.grid(column=1, row=2)
+chb_zone_apex.grid(column=1, row=1)
 
 chb_crop_apex = ttk.Checkbutton(tab_apex, text='crop', takefocus=0)
-chb_crop_apex.grid(column=1, row=1, sticky=E)
+chb_crop_apex.grid(column=1, row=0, sticky=E)
 ent_crop_apex = ttk.Entry(tab_apex)
 ent_crop_apex.insert(0, '0.53')
 # ent_crop.insert(0, '1200,1080,360,0')
-ent_crop_apex.grid(column=2, row=1, sticky=W)
+ent_crop_apex.grid(column=2, row=0, sticky=W)
 
 chb_webcam_apex = ttk.Checkbutton(tab_apex, text='webcam', padding=20, takefocus=0)
 chb_webcam_apex.grid(column=1, row=2)
