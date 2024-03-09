@@ -212,12 +212,40 @@ def render_zone_apex(path, rez_orig, scale, kwargs):
     )
 
 
+def render_rang_apex(path, rez_orig, scale, kwargs):
+    global rez
+
+    crop_x = 90
+    crop_y = 125
+    scale_to_x = crop_x * 1.5
+    scale_to_y = crop_y * 1.5
+    overlay_x = rez['width'] - scale_to_x
+    overlay_y = ((rez['height'] / 2) - (
+                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+    if kwargs['apex_kills'] == True:
+        overlay_y -= 61
+    making_radar = (
+        ffmpeg
+        .input(fr'{path}_folder/bg.mp4')
+        .overlay(
+            ffmpeg
+            .input(fr'{path}_folder/apex_mask.mp4')
+            .filter('crop', crop_x, crop_y, 1806, 7)
+            .filter('scale', scale_to_x, scale_to_y)
+            , x=overlay_x
+            , y=overlay_y
+        )
+        .output(fr'{path}_folder/rang_on_bg.mp4', vcodec='libx264')
+        .run(overwrite_output=False)
+    )
+
+
 def render_hp_apex(path, rez_orig, scale):
     global rez
     crop_x = 380
     crop_y = 71
-    scale_to_x = crop_x * 2.5
-    scale_to_y = crop_y * 2.5
+    scale_to_x = crop_x * 2
+    scale_to_y = crop_y * 2
     overlay_y = ((rez['height'] / 2) - (
                 ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
 
@@ -402,7 +430,7 @@ def overlayall(path, outputs):
 
     overlay = overlay.overlay(
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
-        x='342', y=400)  # add nameing
+        x='342', y=200)  # add nameing
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
     ffmpeg.run(overlay, overwrite_output=True)
 
@@ -503,6 +531,9 @@ def render(outputs, path, **kwargs):
     if kwargs['apex_kills'] == True:
         print('Начало рендера apex_hp')
         render_kills_apex(path, rez_input, entry)
+    if kwargs['apex_rang'] == True:
+        print('Начало рендера apex_rang')
+        render_rang_apex(path, rez_input, entry, kwargs)
 
     overlayall(path, outputs)
     # for i in kwargs:
