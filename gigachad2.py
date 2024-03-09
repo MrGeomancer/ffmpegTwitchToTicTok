@@ -430,7 +430,8 @@ def overlayall(path, outputs):
 
     overlay = overlay.overlay(
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
-        x='342', y=200)  # add nameing
+        # x='342', y=200)  # add nameing apex
+        x='342', y=400)  # add nameing
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
     ffmpeg.run(overlay, overwrite_output=True)
 
