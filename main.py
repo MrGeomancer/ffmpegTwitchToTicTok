@@ -99,6 +99,7 @@ def render():
     apex_hp_armor = bool
     apex_rang = bool
     apex_make_bg = bool
+    valheim_hp = bool
     outputs = []
     radval = radio_var.get()
     # print('radval:',radval)
@@ -234,11 +235,46 @@ def render():
             # print('пустая')
             pass
 
+    if radval == 3:
+        try:
+            if chb_to916_any.state()[0] == 'selected':
+                any_to916 = True
+                # outputs.append(fr'{path}_folder/blured.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+        try:
+            if chb_crop_any.state()[0] == 'selected':
+                any_crop = True
+                any_cropentry = ent_crop_any.get()
+                outputs.append(fr'{path}_folder/croped_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+        try:
+            if chb_webcam_any.state()[0] == 'selected':
+                any_webcam = True
+                outputs.append(fr'{path}_folder/webcam_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
+        try:
+            if chb_valheimHP_any.state()[0] == 'selected':
+                valheim_hp = True
+                outputs.append(fr'{path}_folder/valheim_hp_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
     gigachad2.render(outputs=outputs,
                      any_to916=any_to916, any_crop=any_crop, any_cropentry=any_cropentry, any_webcam=any_webcam,
                      cs_kills=cs_kills, cs_players=cs_players, cs_radar=cs_radar,
                      apex_make_bg=apex_make_bg, apex_radar=apex_radar, apex_hp=apex_hp, apex_kills=apex_kills,
                      apex_rang=apex_rang, apex_zone=apex_zone, apex_hp_armor=apex_hp_armor,
+                     valheim_hp=valheim_hp,
                      path=path,
                      )
 
@@ -321,8 +357,8 @@ def add_checkbox_entry_cs():
     checkboxes_entries_cs.append((checkbox, entry))
 
     # Размещаем Checkbox и Entry на форме
-    checkbox.grid(row=2 + len(checkboxes_entries_cs), column=0, sticky=W)
-    entry.grid(row=2 + len(checkboxes_entries_cs), column=1, columnspan=2, sticky=E)
+    checkbox.grid(row=6 + len(checkboxes_entries_cs), column=0, sticky=W)
+    entry.grid(row=6 + len(checkboxes_entries_cs), column=1, columnspan=2, sticky=E)
 
 
 def add_checkbox_entry_apex():
@@ -335,8 +371,8 @@ def add_checkbox_entry_apex():
     checkboxes_entries_apex.append((checkbox, entry))
 
     # Размещаем Checkbox и Entry на форме
-    checkbox.grid(row=4 + len(checkboxes_entries_apex), column=0, sticky=W)
-    entry.grid(row=4 + len(checkboxes_entries_apex), column=1, columnspan=2, sticky=E)
+    checkbox.grid(row=6 + len(checkboxes_entries_apex), column=0, sticky=W)
+    entry.grid(row=6 + len(checkboxes_entries_apex), column=1, columnspan=2, sticky=E)
 
 
 def add_checkbox_entry_any():
@@ -349,8 +385,8 @@ def add_checkbox_entry_any():
     checkboxes_entries_any.append((checkbox, entry))
 
     # Размещаем Checkbox и Entry на форме
-    checkbox.grid(row=2 + len(checkboxes_entries_any), column=0, sticky=W)
-    entry.grid(row=2 + len(checkboxes_entries_any), column=1, columnspan=2, sticky=E)
+    checkbox.grid(row=6 + len(checkboxes_entries_any), column=0, sticky=W)
+    entry.grid(row=6 + len(checkboxes_entries_any), column=1, columnspan=2, sticky=E)
 
 
 def print_values_cs():
@@ -371,7 +407,12 @@ def print_values_any():
         print(f"Checkbox: {checkbox.state()}, Entry: {entry.get()}")
 
 
-chb_to916_cs = ttk.Checkbutton(tab_cs, text='to 9:16', padding=20, takefocus=0)
+var = IntVar()
+var.set(1)
+chb_to916_cs = ttk.Checkbutton(tab_cs, text='to 9:16', padding=20, takefocus=0,
+                               variable=var
+                               )
+
 chb_to916_cs.grid(column=0, row=0)
 
 chb_kills_cs = ttk.Checkbutton(tab_cs, text='kills', padding=20, takefocus=0)
@@ -393,12 +434,15 @@ ent_crop_cs.grid(column=2, row=1, sticky=W)
 chb_webcam_cs = ttk.Checkbutton(tab_cs, text='webcam', padding=20, takefocus=0)
 chb_webcam_cs.grid(column=0, row=2)
 
-ttk.Button(tab_cs, text='Добавить crop', command=add_checkbox_entry_cs).grid(column=1, row=2)
+ttk.Button(tab_cs, text='Добавить crop', command=add_checkbox_entry_cs).grid(column=0, row=5)
 
 print_button = Button(tab_cs, text="Печать значений", command=print_values_cs)
-print_button.grid(column=2, row=2, pady=5)
+print_button.grid(column=2, row=5, pady=5)
 
-chb_to916_apex = ttk.Checkbutton(tab_apex, text='to 9:16', padding=20, takefocus=0)
+
+chb_to916_apex = ttk.Checkbutton(tab_apex, text='to 9:16', padding=20, takefocus=0,
+                                 variable=var
+                                 )
 chb_to916_apex.grid(column=0, row=0)
 
 chb_kills_apex = ttk.Checkbutton(tab_apex, text='kills, dmg', padding=20, takefocus=0)
@@ -414,10 +458,10 @@ chb_hp_armor_apex = ttk.Checkbutton(tab_apex, text='hp with armor', padding=20, 
 chb_hp_armor_apex.grid(column=2, row=2)
 
 chb_radar_apex = ttk.Checkbutton(tab_apex, text='radar', padding=20, takefocus=0)
-chb_radar_apex.grid(column=0, row=1)
+chb_radar_apex.grid(column=1, row=1)
 
 chb_zone_apex = ttk.Checkbutton(tab_apex, text='zone', padding=20, takefocus=0)
-chb_zone_apex.grid(column=1, row=1)
+chb_zone_apex.grid(column=1, row=2)
 
 chb_crop_apex = ttk.Checkbutton(tab_apex, text='crop', takefocus=0)
 chb_crop_apex.grid(column=1, row=0, sticky=E)
@@ -427,30 +471,35 @@ ent_crop_apex.insert(0, '0.53')
 ent_crop_apex.grid(column=2, row=0, sticky=W)
 
 chb_webcam_apex = ttk.Checkbutton(tab_apex, text='webcam', padding=20, takefocus=0)
-chb_webcam_apex.grid(column=1, row=2)
+chb_webcam_apex.grid(column=0, row=1)
 
-ttk.Button(tab_apex, text='Добавить crop', command=add_checkbox_entry_apex).grid(column=0, row=4)
+ttk.Button(tab_apex, text='Добавить crop', command=add_checkbox_entry_apex).grid(column=0, row=5)
 
 print_button = Button(tab_apex, text="Печать значений", command=print_values_apex)
-print_button.grid(column=1, row=4, pady=5)
+print_button.grid(column=2, row=5, pady=5)
 
-chb_to916_any = ttk.Checkbutton(tab_any, text='to 9:16', padding=20, takefocus=0)
+chb_to916_any = ttk.Checkbutton(tab_any, text='to 9:16', padding=20, takefocus=0,
+                                variable=var
+                                )
 chb_to916_any.grid(column=0, row=0)
 
 chb_crop_any = ttk.Checkbutton(tab_any, text='crop', takefocus=0)
 chb_crop_any.grid(column=1, row=0, sticky=E)
 ent_crop_any = ttk.Entry(tab_any)
-ent_crop_any.insert(0, '1,2')
+ent_crop_any.insert(0, '0.625')
 # ent_crop.insert(0, '1200,1080,360,0')
 ent_crop_any.grid(column=2, row=0, sticky=W)
 
 chb_webcam_any = ttk.Checkbutton(tab_any, text='webcam', padding=20, takefocus=0)
 chb_webcam_any.grid(column=0, row=1)
 
-ttk.Button(tab_any, text='Добавить crop', command=add_checkbox_entry_any).grid(column=0, row=2)
+chb_valheimHP_any = ttk.Checkbutton(tab_any, text='Valheim hp', padding=20, takefocus=0)
+chb_valheimHP_any.grid(column=1, row=1)
+
+ttk.Button(tab_any, text='Добавить crop', command=add_checkbox_entry_any).grid(column=0, row=5)
 
 print_button = Button(tab_any, text="Печать значений", command=print_values_any)
-print_button.grid(column=1, row=1, pady=5)
+print_button.grid(column=2, row=5, pady=5)
 
 # btn = ttk.Button(radiobtns, text="Обзор.", command= lambda: print(chb_players.state(), chb_kills.state()))
 # btn.grid(column=2, row=2)
