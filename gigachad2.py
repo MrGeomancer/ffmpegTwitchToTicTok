@@ -2,7 +2,7 @@ import ffmpeg
 import os
 
 
-def render_crop(path, scale, rez_orig):
+def render_crop(path, scale, rez_orig, kwargs):
     # print('scale:',scale)
     # type(scale)
     global rez
@@ -12,9 +12,11 @@ def render_crop(path, scale, rez_orig):
     scale_to_y = int(rez['width'] / crop_x * crop_y)
     overlay_y = int(rez['height'] / 2 - scale_to_y / 2)
     croped_path = fr'{path}_folder/{scale}x{int(crop_x)}x{int(crop_y)}croped.mp4'
-
     if overlay_y < 610:
         rez.update({'naming_y': overlay_y - 280})
+    gamma_coef = 1
+    if kwargs['any_brightness'] == True:
+        gamma_coef = 1.2
     print('overlay_y:', overlay_y)
     print('rez[widthg]', rez['width'])
     making_neworig = (
@@ -26,10 +28,6 @@ def render_crop(path, scale, rez_orig):
         .run(overwrite_output=False)
     )
 
-    # overlay = ffmpeg.input(fr'{path}_folder/bg.png').overlay(ffmpeg.input(fr'{path}_folder/croped.mp4').filter('scale', rez['width'], scale_to_y), x='0', y=overlay_y)
-    # overlay = overlay.output(fr'{path}_folder/crops_on_bg.mp4', vcodec='libx264')
-    # ffmpeg.run(overlay, overwrite_output=True)
-
     crop_on_bg = (
         ffmpeg
         .input(fr'{path}_folder/bg.mp4')
@@ -38,6 +36,7 @@ def render_crop(path, scale, rez_orig):
             .input(path)
             .filter('crop', crop_x, crop_y, crop_from_x, 0)
             .filter('scale', rez['width'], scale_to_y)
+            .filter('eq', gamma=gamma_coef)
             , x='0'
             , y=overlay_y
         )
@@ -226,9 +225,9 @@ def render_rang_apex(path, rez_orig, scale, kwargs):
 
     crop_x = 90
     crop_y = 125
-    scale_to_x = crop_x * 1.5
-    scale_to_y = crop_y * 1.5
-    overlay_x = rez['width'] - scale_to_x
+    scale_to_x = crop_x * 1.8
+    scale_to_y = crop_y * 1.8
+    overlay_x = rez['width'] - scale_to_x - 2
     overlay_y = ((rez['height'] / 2) - (
             ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
     if kwargs['apex_kills'] == True:
@@ -370,7 +369,7 @@ def render_players_cs(path, rez_orig, scale):
 def render_hp_valheim(path, rez_orig, scale):
     global rez
     crop_x = 228
-    crop_y = 200
+    crop_y = 170
     scale_to_x = crop_x * 1.5
     scale_to_y = crop_y * 1.5
     overlay_x = 2
@@ -383,12 +382,12 @@ def render_hp_valheim(path, rez_orig, scale):
         .overlay(
             ffmpeg
             .input(path)
-            .filter('crop', crop_x, crop_y, 45, 1035)
+            .filter('crop', crop_x, crop_y, 30, 1025)
             .filter('scale', scale_to_x, scale_to_y)
             , x=overlay_x
             , y=overlay_y
         )
-        .output(fr'{path}_folder/players_on_bg.mp4', vcodec='libx264')
+        .output(fr'{path}_folder/valheim_hp_on_bg.mp4', vcodec='libx264')
         .run(overwrite_output=False)
     )
 
@@ -503,8 +502,7 @@ def render(outputs, path, **kwargs):
         entry = 1
     if kwargs['any_crop'] == True:
         print('Начало рендера crop')
-        print(kwargs['any_cropentry'])
-        croped_path = render_crop(path, entry, rez_input)
+        croped_path = render_crop(path, entry, rez_input,kwargs)
     if kwargs['any_to916'] == True:
         if kwargs['any_crop'] == True:
             print('Начало рендера блюр из crop')
