@@ -12,6 +12,9 @@ def render_crop(path, scale, rez_orig):
     scale_to_y = int(rez['width'] / crop_x * crop_y)
     overlay_y = int(rez['height'] / 2 - scale_to_y / 2)
     croped_path = fr'{path}_folder/{scale}x{int(crop_x)}x{int(crop_y)}croped.mp4'
+
+    if overlay_y < 610:
+        rez.update({'naming_y': overlay_y - 280})
     print('overlay_y:', overlay_y)
     print('rez[widthg]', rez['width'])
     making_neworig = (
@@ -52,7 +55,7 @@ def render_kills_cs(path, rez_orig, scale):
     scale_to_y = crop_y * 1.5
     overlay_x = int(rez['width'] - scale_to_x)
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
     #
     # print('высота кадра:',rez['height'])
     # print('высота оригинального видоса:',int((rez['width']/(rez_orig['width']*scale)) * rez_orig['height']))
@@ -96,7 +99,9 @@ def render_radar_cs(path, rez_orig, scale):
     scale_to_x = crop_x * 1.5
     scale_to_y = crop_y * 1.5
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+    if scale_to_x > 342:
+        rez.update({'naming_x': int(scale_to_x) + 20})
 
     making_radar = (
         ffmpeg
@@ -160,13 +165,15 @@ def render_radar_apex(path, rez_orig, scale, kwargs):
     scale_to_x = crop_x * 1.5
     scale_to_y = crop_y * 1.5
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
     if kwargs['apex_hp'] == True:
         overlay_y -= 178
     elif kwargs['apex_hp_armor'] == True:
         overlay_y -= 220
     if kwargs['apex_zone'] == True:
         overlay_y -= 81
+    if scale_to_x > 342:
+        rez.update({'naming_x': int(scale_to_x) + 20})
     making_radar = (
         ffmpeg
         .input(fr'{path}_folder/bg.mp4')
@@ -191,11 +198,13 @@ def render_zone_apex(path, rez_orig, scale, kwargs):
     scale_to_x = crop_x * 1.5
     scale_to_y = crop_y * 1.5
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
     if kwargs['apex_hp'] == True:
         overlay_y -= 179
     elif kwargs['apex_hp_armor'] == True:
         overlay_y -= 220
+    if scale_to_x > 342:
+        rez.update({'naming_x': int(scale_to_x) + 20})
     making_radar = (
         ffmpeg
         .input(fr'{path}_folder/bg.mp4')
@@ -221,7 +230,7 @@ def render_rang_apex(path, rez_orig, scale, kwargs):
     scale_to_y = crop_y * 1.5
     overlay_x = rez['width'] - scale_to_x
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
     if kwargs['apex_kills'] == True:
         overlay_y -= 61
     making_radar = (
@@ -247,8 +256,9 @@ def render_hp_apex(path, rez_orig, scale):
     scale_to_x = crop_x * 2
     scale_to_y = crop_y * 2
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
-
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+    if overlay_y < 610:
+        rez.update({'naming_y': overlay_y - 230})
     making_radar = (
         ffmpeg
         .input(fr'{path}_folder/bg.mp4')
@@ -272,8 +282,10 @@ def render_hp_armor_apex(path, rez_orig, scale):
     scale_to_x = crop_x * 2
     scale_to_y = crop_y * 2
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
 
+    if overlay_y < 610:
+        rez.update({'naming_y': overlay_y - 230})
     making_radar = (
         ffmpeg
         .input(fr'{path}_folder/bg.mp4')
@@ -298,13 +310,12 @@ def render_kills_apex(path, rez_orig, scale):
     scale_to_y1 = crop_y * 1.9
     overlay_x1 = rez['width'] - scale_to_x1
     overlay_y1 = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y1
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y1
     scale_to_x2 = 103 * 1.9
     scale_to_y2 = 32 * 1.9
     overlay_x2 = rez['width'] - scale_to_x1 - scale_to_x2
     overlay_y2 = ((rez['height'] / 2) - (
             ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y1
-
 
     making_kills = (
         ffmpeg
@@ -338,7 +349,7 @@ def render_players_cs(path, rez_orig, scale):
     scale_to_y = crop_y * 1.5
     overlay_x = int(rez['width'] / 2 - scale_to_x / 2)
     overlay_y = ((rez['height'] / 2) - (
-                ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
 
     making_players = (
         ffmpeg
@@ -347,6 +358,32 @@ def render_players_cs(path, rez_orig, scale):
             ffmpeg
             .input(path)
             .filter('crop', 680, 180, 620, 0)
+            .filter('scale', scale_to_x, scale_to_y)
+            , x=overlay_x
+            , y=overlay_y
+        )
+        .output(fr'{path}_folder/players_on_bg.mp4', vcodec='libx264')
+        .run(overwrite_output=False)
+    )
+
+
+def render_hp_valheim(path, rez_orig, scale):
+    global rez
+    crop_x = 228
+    crop_y = 200
+    scale_to_x = crop_x * 1.5
+    scale_to_y = crop_y * 1.5
+    overlay_x = 2
+    overlay_y = ((rez['height'] / 2) - (
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
+
+    making_players = (
+        ffmpeg
+        .input(fr'{path}_folder/bg.mp4')
+        .overlay(
+            ffmpeg
+            .input(path)
+            .filter('crop', crop_x, crop_y, 45, 1035)
             .filter('scale', scale_to_x, scale_to_y)
             , x=overlay_x
             , y=overlay_y
@@ -421,8 +458,9 @@ def render_blur(path, blurcroped, croped_path=None):
 
 
 def overlayall(path, outputs):
-    inputs = [ffmpeg.input(path) for path in outputs]
+    # inputs = [ffmpeg.input(path) for path in outputs]
     global rez
+    print(rez)
     overlay = overlay = ffmpeg.input(fr'{path}_folder/blured.mp4')
     for item in outputs:
         overlay = overlay.overlay(ffmpeg.input(item).filter('chromakey', color='0x00FF00', similarity=0.2, blend=0.2),
@@ -431,35 +469,10 @@ def overlayall(path, outputs):
     overlay = overlay.overlay(
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
         # x='342', y=200)  # add nameing apex
-        x='342', y=400)  # add nameing
+        # x='342', y=400)  # add nameing
+        x=rez['naming_x'], y=rez['naming_y'])  # add nameing
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
     ffmpeg.run(overlay, overwrite_output=True)
-
-    # overlay_all = (
-    #     ffmpeg
-    #     .input(fr'{path}_folder/blured.mp4')
-    #     .overlay(
-    #         ffmpeg
-    #         .input(fr'{path}_folder/crop_on_bg.mp4')
-    #         # .filter('scale', rez['width'], -1)
-    #         # .filter('scale', rez['width'], scale_to_y)
-    #         # .filter('scale', rez['width'], rez['height'])  # Указывайте желаемое разрешение
-    #         .filter('chromakey', color='0x00FF00', similarity=0.2, blend=0.2)  # Замените цвет и настройки на подходящие
-    #         , x='0'
-    #         , y='0'
-    #     )
-    #     .output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264')
-    #     .run(overwrite_output=True)
-    # )
-
-    # overlay = ffmpeg.input(fr'{path}_folder/blured.mp4').overlay(ffmpeg.input(fr'{path}_folder/croped.mp4'), x='0', y='756')  # only cropedo_rig
-    # overlay = ffmpeg.input(fr'{path}_folder/blured.mp4').overlay(ffmpeg.input(fr'{path}').filter('scale', 1440, -1), x='0', y='864')  # only cropedo_rig
-
-    # overlay = overlay.overlay(
-    #     ffmpeg.input(r'C:\Users\Pekarnya\Videos\Desktop\out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"), x='342', y=400)  # add nameing
-    # overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final6.mp4', vcodec='libx264', acodec='aac')
-    #
-    # ffmpeg.run(overlay, overwrite_output=True)
 
 
 def take_rez(path):
@@ -471,7 +484,6 @@ def take_rez(path):
 
 def render(outputs, path, **kwargs):
     global rez
-    colvo = len(outputs) - 1
     print('outputs:', outputs)
     os.makedirs(fr'{path}_folder/', exist_ok=True)
     rez_input = take_rez(path)
@@ -535,6 +547,9 @@ def render(outputs, path, **kwargs):
     if kwargs['apex_rang'] == True:
         print('Начало рендера apex_rang')
         render_rang_apex(path, rez_input, entry, kwargs)
+    if kwargs['valheim_hp'] == True:
+        print('Начало рендера valheim_hp')
+        render_hp_valheim(path, rez_input, entry)
 
     overlayall(path, outputs)
     # for i in kwargs:
@@ -545,7 +560,8 @@ def render(outputs, path, **kwargs):
 rez = {
     'width': 1440,
     'height': 2808,
-    # 'chonit':'smth',
+    'naming_y': 400,
+    'naming_x': 342,
 }
 
 overlay_y_min = 400
