@@ -369,11 +369,11 @@ def render_players_cs(path, rez_orig, scale):
 def render_hp_valheim(path, rez_orig, scale):
     global rez
     crop_x = 228
-    crop_y = 170
+    crop_y = 175
     scale_to_x = crop_x * 1.5
     scale_to_y = crop_y * 1.5
-    overlay_x = 2
-    overlay_y = ((rez['height'] / 2) - (
+    overlay_x = 0
+    overlay_y = ((rez['height'] / 2) + (
             ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) - scale_to_y
 
     making_players = (
@@ -382,12 +382,38 @@ def render_hp_valheim(path, rez_orig, scale):
         .overlay(
             ffmpeg
             .input(path)
-            .filter('crop', crop_x, crop_y, 30, 1025)
+            .filter('crop', crop_x, crop_y, 49, 849)
             .filter('scale', scale_to_x, scale_to_y)
             , x=overlay_x
             , y=overlay_y
         )
         .output(fr'{path}_folder/valheim_hp_on_bg.mp4', vcodec='libx264')
+        .run(overwrite_output=False)
+    )
+
+
+def render_items_valheim(path, rez_orig, scale):
+    global rez
+    crop_x = 554
+    crop_y = 64
+    scale_to_x = crop_x * 1.5
+    scale_to_y = crop_y * 1.5
+    overlay_x = 0
+    overlay_y = ((rez['height'] / 2) - (
+            ((rez['width'] / (rez_orig['width'] * scale)) * rez_orig['height']) / 2)) + 40
+
+    making_players = (
+        ffmpeg
+        .input(fr'{path}_folder/bg.mp4')
+        .overlay(
+            ffmpeg
+            .input(path)
+            .filter('crop', crop_x, crop_y, 47, 44)
+            .filter('scale', scale_to_x, scale_to_y)
+            , x=overlay_x
+            , y=overlay_y
+        )
+        .output(fr'{path}_folder/valheim_items_on_bg.mp4', vcodec='libx264')
         .run(overwrite_output=False)
     )
 
@@ -432,7 +458,7 @@ def render_webcam(path, rez_orig, scale):
 
 
 def render_blur(path, blurcroped, croped_path=None):
-    scalefilt = f'scale={rez['width']}:{rez['height']},setsar=1:1'
+    scalefilt = f'scale={rez["width"]}:{rez["height"]},setsar=1:1'
     blurfilt = 'boxblur=luma_radius=27'
     blurfilt2 = 'boxblur=luma_power=3'
     blurfilt3 = 'boxblur=chroma_radius=27'
@@ -456,20 +482,58 @@ def render_blur(path, blurcroped, croped_path=None):
         )
 
 
+def makesubs(path):
+    print('начало рендера субритров')
+    subs = (
+        ffmpeg
+        .input(path)
+        .output(fr'{path}_folder/audio.wav', acodec='pcm_s16le', ac=1, ar=16000)
+        .run()
+    )
+    global srt
+    print('начало рендера субритров')
+    try:
+        import whisper
+        from whisper.utils import get_writer
+        audio = fr'{path}_folder/audio.wav'
+        output_dir = fr'{path}_folder'
+        whisper = whisper.load_model("large-v2")
+        result = whisper.transcribe(audio)
+        writer = get_writer("srt", output_dir)
+        writer(result, audio)
+
+        os.startfile(fr'{path}_folder/audio.srt')
+
+        input('Нажмите Enter для согласия с получившимся файлом субтитров')
+
+        srt = True
+    except Exception as e:
+        print('---')
+        print('---')
+        print('---')
+        print(e)
+        srt = False
+        pass
+
+
 def overlayall(path, outputs):
+    print('начало рендера final')
     # inputs = [ffmpeg.input(path) for path in outputs]
     global rez
     print(rez)
-    overlay = overlay = ffmpeg.input(fr'{path}_folder/blured.mp4')
+    overlay = ffmpeg.input(fr'{path}_folder/blured.mp4')
     for item in outputs:
         overlay = overlay.overlay(ffmpeg.input(item).filter('chromakey', color='0x00FF00', similarity=0.2, blend=0.2),
                                   x=0, y=0)
 
     overlay = overlay.overlay(
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
-        # x='342', y=200)  # add nameing apex
+        # x='342', y=200)  # add nameing apex-
         # x='342', y=400)  # add nameing
         x=rez['naming_x'], y=rez['naming_y'])  # add nameing
+    if srt:
+        overlay = overlay.filter('subtitles', fr'{path}_folder/audio.srt', force_style="PrimaryColour=&H03fcff,fontsize=8,Italic=1,Spacing=0.8,MarginV=72")
+
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
     ffmpeg.run(overlay, overwrite_output=True)
 
@@ -483,6 +547,7 @@ def take_rez(path):
 
 def render(outputs, path, **kwargs):
     global rez
+    global srt
     print('outputs:', outputs)
     os.makedirs(fr'{path}_folder/', exist_ok=True)
     rez_input = take_rez(path)
@@ -493,7 +558,7 @@ def render(outputs, path, **kwargs):
                , t=1
                )
         # .filter('scale', rez['width'], rez['height'])
-        .output(fr'{path}_folder/bg.mp4', vf=f'scale={rez['width']}:{rez['height']},setsar=1:1,fps=60')
+        .output(fr'{path}_folder/bg.mp4', vf=f'scale={rez["width"]}:{rez["height"]},setsar=1:1,fps=60')
         .run(overwrite_output=True)
     )
     try:
@@ -548,11 +613,21 @@ def render(outputs, path, **kwargs):
     if kwargs['valheim_hp'] == True:
         print('Начало рендера valheim_hp')
         render_hp_valheim(path, rez_input, entry)
+    if kwargs['valheim_items'] == True:
+        print('Начало рендера valheim_items')
+        render_items_valheim(path, rez_input, entry)
 
+    makesubs(path)
     overlayall(path, outputs)
     # for i in kwargs:
     #     print(kwargs)
-    print(outputs)
+    # print(outputs)
+    print (f'path: {path}')
+    print('os.path:',os.path)
+    print('os.path.basename(path):',os.path.basename(path))
+    print('os.path.join:',os.path.join(f'{path}_folder',os.path.basename(path)))
+    # os.system(f'copy "{path}" "{os.path.join(f'{path}_folder',os.path.basename(path))}"')
+
 
 
 rez = {
@@ -561,5 +636,6 @@ rez = {
     'naming_y': 400,
     'naming_x': 342,
 }
+srt = False
 
 overlay_y_min = 400
