@@ -101,6 +101,7 @@ def render():
     apex_rang = bool
     apex_make_bg = bool
     valheim_hp = bool
+    valheim_items = bool
     outputs = []
     radval = radio_var.get()
     # print('radval:',radval)
@@ -278,13 +279,21 @@ def render():
             # print('пустая')
             pass
 
+        try:
+            if chb_valheimItems_any.state()[0] == 'selected':
+                valheim_items = True
+                outputs.append(fr'{path}_folder/valheim_items_on_bg.mp4')
+        except IndexError:
+            # print('пустая')
+            pass
+
     gigachad2.render(outputs=outputs,
                      any_to916=any_to916, any_crop=any_crop, any_cropentry=any_cropentry, any_webcam=any_webcam,
                      any_brightness=any_brightness,
                      cs_kills=cs_kills, cs_players=cs_players, cs_radar=cs_radar,
                      apex_make_bg=apex_make_bg, apex_radar=apex_radar, apex_hp=apex_hp, apex_kills=apex_kills,
                      apex_rang=apex_rang, apex_zone=apex_zone, apex_hp_armor=apex_hp_armor,
-                     valheim_hp=valheim_hp,
+                     valheim_hp=valheim_hp, valheim_items=valheim_items,
                      path=path,
                      )
 
@@ -504,7 +513,10 @@ chb_webcam_any = ttk.Checkbutton(tab_any, text='webcam', padding=20, takefocus=0
 chb_webcam_any.grid(column=0, row=1)
 
 chb_valheimHP_any = ttk.Checkbutton(tab_any, text='Valheim hp', padding=20, takefocus=0)
-chb_valheimHP_any.grid(column=2, row=1)
+chb_valheimHP_any.grid(column=0, row=2)
+
+chb_valheimItems_any = ttk.Checkbutton(tab_any, text='Valheim items', padding=20, takefocus=0)
+chb_valheimItems_any.grid(column=1, row=2)
 
 chb_brightness_any = ttk.Checkbutton(tab_any, text='brightness', padding=20, takefocus=0)
 chb_brightness_any.grid(column=1, row=1)
