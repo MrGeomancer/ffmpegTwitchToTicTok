@@ -495,12 +495,12 @@ def makesubs(path):
     try:
         import whisper
         from whisper.utils import get_writer
-        audio = fr'{path}_folder/audio.wav'
-        output_dir = fr'{path}_folder'
         whisper = whisper.load_model("large-v2")
-        result = whisper.transcribe(audio)
-        writer = get_writer("srt", output_dir)
-        writer(result, audio)
+        print('модель загружена\nНачало транскрибации')
+        result = whisper.transcribe(fr'{path}_folder/audio.wav')
+        print('Транскрибация закончена\nПолучение srt')
+        writer = get_writer("srt", fr'{path}_folder')
+        writer(result, fr'{path}_folder/audio.wav')
 
         os.startfile(fr'{path}_folder/audio.srt')
 
@@ -528,11 +528,11 @@ def overlayall(path, outputs):
 
     overlay = overlay.overlay(
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
-        # x='342', y=200)  # add nameing apex-
-        # x='342', y=400)  # add nameing
         x=rez['naming_x'], y=rez['naming_y'])  # add nameing
     if srt:
-        overlay = overlay.filter('subtitles', fr'{path}_folder/audio.srt', force_style="PrimaryColour=&H03fcff,fontsize=8,Italic=1,Spacing=0.8,MarginV=72")
+        srtf=fr'"{path}_folder/audio.srt"'
+        print(srtf)
+        overlay = overlay.filter('subtitles', srtf, force_style="PrimaryColour=&H03fcff,fontsize=8,Italic=1,Spacing=0.8,MarginV=72")
 
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
     ffmpeg.run(overlay, overwrite_output=True)
