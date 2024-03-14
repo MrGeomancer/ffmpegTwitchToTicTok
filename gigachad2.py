@@ -483,26 +483,27 @@ def render_blur(path, blurcroped, croped_path=None):
 
 
 def makesubs(path):
-    print('начало рендера субритров')
+    print('начало рендера аудио')
+    outpath = f'{path}'[-7:-4]
     subs = (
         ffmpeg
         .input(path)
-        .output(fr'{path}_folder/audio.wav', acodec='pcm_s16le', ac=1, ar=16000)
+        .output(fr'cache/{outpath}.wav', acodec='pcm_s16le', ac=1, ar=16000)
         .run()
     )
     global srt
-    print('начало рендера субритров')
+    print('начало рендера файла субритров')
     try:
         import whisper
         from whisper.utils import get_writer
         whisper = whisper.load_model("large-v2")
         print('модель загружена\nНачало транскрибации')
-        result = whisper.transcribe(fr'{path}_folder/audio.wav')
+        result = whisper.transcribe(fr'cache/{outpath}.wav')
         print('Транскрибация закончена\nПолучение srt')
-        writer = get_writer("srt", fr'{path}_folder')
-        writer(result, fr'{path}_folder/audio.wav')
+        writer = get_writer("srt", fr'cache')
+        writer(result, fr'cache/{outpath}.wav')
 
-        os.startfile(fr'{path}_folder/audio.srt')
+        os.startfile(fr'{os.getcwd()}/cache/{outpath}.srt')
 
         input('Нажмите Enter для согласия с получившимся файлом субтитров')
 
@@ -530,7 +531,8 @@ def overlayall(path, outputs):
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
         x=rez['naming_x'], y=rez['naming_y'])  # add nameing
     if srt:
-        srtf=fr'"{path}_folder/audio.srt"'
+        outpath = f'{path}'[-7:-4]
+        srtf=fr'cache/{outpath}.srt'
         print(srtf)
         overlay = overlay.filter('subtitles', srtf, force_style="PrimaryColour=&H03fcff,fontsize=8,Italic=1,Spacing=0.8,MarginV=72")
 
