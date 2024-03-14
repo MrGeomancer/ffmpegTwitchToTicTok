@@ -1,7 +1,7 @@
 @echo off
 
 echo Активация виртуального окружения...
-call .venv\Scripts\activate
+call .venv10\Scripts\activate
 if errorlevel 1 (
     echo Ошибка при активации виртуального окружения.
     echo Нажмите любую клавишу, чтобы закрыть окно...
