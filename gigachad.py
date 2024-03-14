@@ -95,7 +95,6 @@ making_bg = (
 
 infile = ffmpeg.input(input_video)
 inputs=[ffmpeg.input(path) for path in outputs]
-# Наложение видео друг на друга с разными координатами
 
 # overlay = inputs[0].overlay(inputs[1], x='1636', y='1260').filter('scale', 455, 192)  # kills
 # overlay = inputs[0].overlay(inputs[1].filter('scale', 342, -1), x='1098', y='612')  # kills
@@ -114,7 +113,6 @@ overlay = inputs[0].overlay(inputs[1].filter('scale', 1440, -1), x='0', y='756')
 overlay = overlay.overlay(inputs[2].filter('trim',duration=f"{ffmpeg.probe(input_video)['streams'][0]['duration']}"),x ='342', y = 400)  # add nameing
 
 
-# Выбираем аудио с первого видео (можно настроить под свои нужды)
 overlay = overlay.output(infile.audio,output_video, vcodec='libx264', acodec='aac')
 
 # Запускаем FFmpeg
