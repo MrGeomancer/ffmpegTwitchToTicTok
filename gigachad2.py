@@ -624,10 +624,6 @@ def render(outputs, path, **kwargs):
     # for i in kwargs:
     #     print(kwargs)
     # print(outputs)
-    print (f'path: {path}')
-    print('os.path:',os.path)
-    print('os.path.basename(path):',os.path.basename(path))
-    print('os.path.join:',os.path.join(f'{path}_folder',os.path.basename(path)))
     # os.system(f'copy "{path}" "{os.path.join(f'{path}_folder',os.path.basename(path))}"')
 
 
