@@ -1,6 +1,9 @@
 import ffmpeg
 import os
-
+import whisper
+from whisper.utils import get_writer
+whisper = whisper.load_model("large-v2")
+print('модель загружена')
 
 def render_crop(path, scale, rez_orig, kwargs):
     # print('scale:',scale)
@@ -494,10 +497,7 @@ def makesubs(path):
     global srt
     print('начало рендера файла субритров')
     try:
-        import whisper
-        from whisper.utils import get_writer
-        whisper = whisper.load_model("large-v2")
-        print('модель загружена\nНачало транскрибации')
+        print('Начало транскрибации')
         result = whisper.transcribe(fr'cache/{outpath}.wav')
         print('Транскрибация закончена\nПолучение srt')
         writer = get_writer("srt", fr'cache')
