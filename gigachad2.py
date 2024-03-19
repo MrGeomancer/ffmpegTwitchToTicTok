@@ -2,6 +2,7 @@ import ffmpeg
 import os
 import whisper
 from whisper.utils import get_writer
+print('Загрузка модели транскрибаци...')
 whisper = whisper.load_model("large-v2")
 print('модель загружена')
 
@@ -537,6 +538,7 @@ def overlayall(path, outputs):
         overlay = overlay.filter('subtitles', srtf, force_style="PrimaryColour=&H03fcff,fontsize=8,Italic=1,Spacing=0.8,MarginV=72")
 
     overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final.mp4', vcodec='libx264', acodec='aac')
+    # overlay = overlay.output(ffmpeg.input(path).audio, fr'{path}_folder/final3.mp4', vcodec='h264_nvenc', acodec='aac', video_bitrate=20000)  #написать битрейт вручную не сработало https://developer.nvidia.com/blog/nvidia-ffmpeg-transcoding-guide/ https://docs.nvidia.com/video-technologies/video-codec-sdk/12.0/ffmpeg-with-nvidia-gpu/index.html#performance-evaluation-and-optimization
     ffmpeg.run(overlay, overwrite_output=True)
 
 
