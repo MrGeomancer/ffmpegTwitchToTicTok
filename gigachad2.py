@@ -372,7 +372,7 @@ def render_players_cs(path, rez_orig, scale):
 
 def render_hp_valheim(path, rez_orig, scale):
     global rez
-    crop_x = 228
+    crop_x = 165
     crop_y = 175
     scale_to_x = crop_x * 1.5
     scale_to_y = crop_y * 1.5
