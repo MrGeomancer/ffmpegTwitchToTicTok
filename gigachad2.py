@@ -451,7 +451,7 @@ def render_webcam(path, rez_orig, scale):
         .overlay(
             ffmpeg
             .input(path)
-            .filter('crop', crop_x, crop_y, 37, 381)
+            .filter('crop', crop_x, crop_y, 21, 381)
             .filter('scale', scale_to_x, scale_to_y)
             , x=overlay_x
             , y=overlay_y
@@ -488,7 +488,7 @@ def render_blur(path, blurcroped, croped_path=None):
 
 def makesubs(path):
     print('начало рендера аудио')
-    outpath = f'{path}'[-7:-4]
+    outpath = f'{path}'[-11:-4]
     subs = (
         ffmpeg
         .input(path)
