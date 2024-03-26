@@ -532,7 +532,7 @@ def overlayall(path, outputs):
         ffmpeg.input(r'stock/out4.mp4').filter('trim', duration=f"{ffmpeg.probe(path)['streams'][0]['duration']}"),
         x=rez['naming_x'], y=rez['naming_y'])  # add nameing
     if srt:
-        outpath = f'{path}'[-7:-4]
+        outpath = f'{path}'[-11:-4]
         srtf=fr'cache/{outpath}.srt'
         print(srtf)
         overlay = overlay.filter('subtitles', srtf, force_style="PrimaryColour=&H03fcff,fontsize=8,Italic=1,Spacing=0.8,MarginV=72")
