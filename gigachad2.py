@@ -435,8 +435,8 @@ def render_webcam(path, rez_orig, scale):
     global rez
     crop_x = 270
     crop_y = 208
-    scale_to_x = crop_x * 1.8
-    scale_to_y = crop_y * 1.8
+    scale_to_x = crop_x * 2
+    scale_to_y = crop_y * 2
     if scale == 1:
         scale_to_x *= 1.5
         scale_to_y *= 1.5
