@@ -492,8 +492,8 @@ def makesubs(path):
     subs = (
         ffmpeg
         .input(path)
-        # .output(fr'cache/{outpath}.wav', acodec='pcm_s16le', ac=1, ar=16000)
-        .output(fr'cache/{outpath}.wav')
+        .output(fr'cache/{outpath}.wav', acodec='pcm_s16le', ac=1, ar=85000)
+        # .output(fr'cache/{outpath}.wav')
         .run()
     )
     global srt
